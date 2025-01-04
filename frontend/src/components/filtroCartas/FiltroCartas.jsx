@@ -1,117 +1,119 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
+import PropTypes from 'prop-types';
 
-const FiltroCartas = () => {
-    // Estado para las cartas
-    const [cards, setCards] = useState([]);
-    const [searchFilters, setSearchFilters] = useState({
-        cardName: "",
-        color: "",
-        type: "",
+
+const FiltroCartas = ({ onFilter, types, colors }) => {
+    const [filters, setFilters] = useState({
+        name: '',
+        type: '',
+        color: '',
+        hp: '',
+        ap: '',
+        level: '',
+        cost: '',
     });
 
-    // Simula la carga de cartas (esto luego se conectará al backend)
-    useEffect(() => {
-        fetch("/api/cards") // Cambia esto con tu endpoint real
-        .then((res) => res.json())
-        .then((data) => setCards(data))
-        .catch((error) => console.error("Error fetching cards:", error));
-    }, []);
-
-    // Maneja el cambio en los filtros
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setSearchFilters((prev) => ({ ...prev, [name]: value }));
+    const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+        ...prevFilters,
+        [name]: value,
+    }));
     };
 
-    // Filtrar las cartas según los filtros
-    const filteredCards = cards.filter((card) => {
-        return (
-        card.card_name.toLowerCase().includes(searchFilters.cardName.toLowerCase()) &&
-        (searchFilters.color === "" || card.color === searchFilters.color) &&
-        (searchFilters.type === "" || card.card_type === searchFilters.type)
-        );
-    });
+    const handleFilter = () => {
+    onFilter(filters);
+    };
 
+    const handleClear = () => {
+    const clearedFilters = {
+        name: '',
+        type: '',
+        color: '',
+        hp: '',
+        ap: '',
+        level: '',
+        cost: '',
+    };
+    setFilters(clearedFilters);
+    onFilter(clearedFilters);
+    };
     return (
-        <div className="p-6">
-        {/* Formulario de filtros */}
-        <div className="p-4 mb-6 bg-white rounded-lg shadow">
-            <h2 className="mb-4 text-xl font-bold">Filtrar cartas</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {/* Filtro por nombre */}
-            <div>
-                <label htmlFor="cardName" className="block text-sm font-medium text-gray-700">
-                Nombre de la carta
-                </label>
-                <input
-                type="text"
-                id="cardName"
-                name="cardName"
-                value={searchFilters.cardName}
-                onChange={handleInputChange}
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                placeholder="Buscar por nombre"
-                />
-            </div>
+        <div className="flex items-center justify-between w-full h-auto p-4 bg-transparent border-2 border-white rounded-lg filter-container">
+            <input
+            type="text"
+            name="name"
+            placeholder="Card Name"
+            value={filters.name}
+            onChange={handleChange}
+            />
 
-            {/* Filtro por color */}
-            <div>
-                <label htmlFor="color" className="block text-sm font-medium text-gray-700">
-                Color
-                </label>
-                <select
-                id="color"
-                name="color"
-                value={searchFilters.color}
-                onChange={handleInputChange}
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                <option value="">Todos</option>
-                <option value="red">Rojo</option>
-                <option value="green">Verde</option>
-                <option value="white">Blanco</option>
-                <option value="blue">Azul</option>
-                </select>
-            </div>
+            <select name="type" value={filters.type} onChange={handleChange}>
+            <option value="Types">Types</option>
+                {types.map((type) => (
+                <option key={type} value={type}>
+                    {type}
+                </option>
+                ))}
+            </select>
 
-            {/* Filtro por tipo */}
-            <div>
-                <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-                Tipo
-                </label>
-                <select
-                id="type"
-                name="type"
-                value={searchFilters.type}
-                onChange={handleInputChange}
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                <option value="">Todos</option>
-                <option value="unit">Unidad</option>
-                <option value="pilot">Piloto</option>
-                <option value="command">Comando</option>
-                <option value="base">Base</option>
-                </select>
-            </div>
-            </div>
-        </div>
+            <select name="color" value={filters.color} onChange={handleChange}>
+            <option value="color">Color</option>
+                {colors.map((color) => (
+                <option key={color} value={color}>
+                    {color}
+                </option>
+                ))}
+            </select>
 
-        {/* Lista de cartas */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredCards.map((card) => (
-            <div
-                key={card.id_carta}
-                className="flex flex-col items-center p-4 bg-white rounded-lg shadow"
-            >
-                <img src={card.image_url} alt={card.card_name} className="object-cover w-32 h-40" />
-                <h3 className="mt-2 text-lg font-bold">{card.card_name}</h3>
-                <p className="text-sm text-gray-500">{card.card_type}</p>
-                <p className="text-sm text-gray-500">{card.color}</p>
-            </div>
-            ))}
+            
+            <input
+                type="number"
+                name="ap"
+                placeholder="AP"
+                value={filters.ap}
+                onChange={handleChange}
+                min={0}
+                max={10}
+            />
+            <input
+                type="number"
+                name="hp"
+                placeholder="HP"
+                min={0}
+                max={10}
+                value={filters.hp}
+                onChange={handleChange}
+            />
+            <input
+                type="number"
+                name="level"
+                min={0}
+                max={10}
+                placeholder="Nivel"
+                value={filters.level}
+                onChange={handleChange}
+            />
+            <input
+                type="number"
+                name="cost"
+                placeholder="Coste"
+                min={0}
+                max={10}
+                value={filters.cost}
+                onChange={handleChange}
+            />
+            <button onClick={handleFilter}>Aplicar filtros</button>
+            <button onClick={handleClear}>Limpiar filtros</button>
         </div>
-        </div>
-    );
+    )
+        
 };
 
+FiltroCartas.propTypes = {
+    onFilter: PropTypes.func.isRequired,
+    types: PropTypes.array.isRequired,
+    colors: PropTypes.array.isRequired,
+
+};
 export default FiltroCartas;
