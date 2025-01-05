@@ -16,11 +16,11 @@ const CreateDeck = () => {
     // Estado para almacenar las cartas
     const [cartas, setCartas] = useState([]);
     const [mazo, setMazo] = useState([]); // Estado para el mazo actual
-    const [filteredCards, setFilteredCards] = useState(cartas);
+
+
+    const [cartasFiltradas, setCartasFiltradas] = useState(cartas); 
     const types = ['Unit', 'Pilot', 'Command', 'Base','Token']; // Tipos posibles
     const colors = ['Red', 'Blue', 'Green', 'White']; // Colores posibles
-    // Estado para las cartas filtradas
-    const [cartasFiltradas, setCartasFiltradas] = useState([]);
 
     // useEffect para cargar las cartas desde el backend
     useEffect(() => {
@@ -66,33 +66,53 @@ const CreateDeck = () => {
     };
 
     // Manejar la eliminación de cartas del mazo
-    const handleRemoveFromDeck = (carta) => {
-        setMazo(
-            mazo
-                .map((item) =>
-                    item.carta.id_coleccion === carta.id_coleccion && item.carta.id_carta === carta.id_carta
-                        ? { ...item, cantidad: item.cantidad - 1 }
-                        : item
-                )
-                .filter((item) => item.cantidad > 0) // Eliminar cartas con cantidad 0
-        );
+    const handleRemoveFromDeck = ({ id_coleccion, id_carta }) => {
+        
+        setMazo((prevMazo) => {
+            const nuevoMazo = prevMazo
+                .map((item) => {
+                    if (item.carta.id_coleccion === id_coleccion && item.carta.id_carta === id_carta) {
+                        return { ...item, cantidad: item.cantidad - 1 };
+                    }
+                    return item;
+                })
+                .filter((item) => item.cantidad > 0);
+    
+            return nuevoMazo;
+        });
     };
+    
+    
 
     // Función para filtrar las cartas
     const applyFilters = (filters) => {
-        const filtered = cartas.filter((card) => {
-            return (
-            (card.name || "").toLowerCase().includes((filters.name || "").toLowerCase()) &&
-            (filters.type === '' || card.type === filters.type) &&
-            (filters.color === '' || card.color === filters.color) &&
-            (filters.hp === '' || card.hp === parseInt(filters.hp)) &&
-            (filters.ap === '' || card.ap === parseInt(filters.ap)) &&
-            (filters.level === '' || card.level === parseInt(filters.level)) &&
-            (filters.cost === '' || card.cost === parseInt(filters.cost))
-            );
+        const cartasFiltradas = cartas.filter((carta) => {
+            
+            if (filters.name && !carta.card_name.toLowerCase().includes(filters.name.toLowerCase())) {
+                return false;
+            }
+            if (filters.type && carta.card_type.toLowerCase() !== filters.type.toLowerCase()) {
+                return false;
+            }
+            if (filters.color && carta.color.toLowerCase() !== filters.color.toLowerCase()) {
+                return false;
+            }
+            if (filters.hp && carta.hp < Number(filters.hp)) {
+                return false;
+            }
+            if (filters.ap && carta.ap < Number(filters.ap)) {
+                return false;
+            }
+            if (filters.level && carta.level < Number(filters.level)) {
+                return false;
+            }
+            if (filters.cost && carta.cost < Number(filters.cost)) {
+                return false;
+            }
+            return true;
         });
 
-        setFilteredCards(filtered);
+        setCartasFiltradas(cartasFiltradas);
     };
 
     return (
@@ -102,13 +122,13 @@ const CreateDeck = () => {
                     <Sidebar />
                 <div className="w-screen h-screen p-5 pl-10 overflow-hidden">
                     <div className="flex flex-col mt-4">
-                        <FiltroCartas cartas={cartas} setCartasFiltradas={setCartasFiltradas} onFilter={applyFilters} types={types} colors={colors} />
+                        <FiltroCartas cartas={cartas} onFilter={applyFilters} types={types} colors={colors} />
                         <div className='grid grid-cols-2 gap-4'>
                             <div className='h-[calc(100dvh-3%)] overflow-y-auto pb-14 pr-2 pt-2'>
-                                <ListadoCartas cartas={cartas} onAddToDeck={handleAddToDeck} onRestToDeck={handleRemoveFromDeck} />
+                                <ListadoCartas cartas={cartasFiltradas} onAddToDeck={handleAddToDeck} onRestToDeck={handleRemoveFromDeck} />
                             </div>
                             <div className='h-[calc(100dvh-3%)] overflow-y-auto pb-14 pr-2 pt-2'>
-                                <MazoActual mazo={mazo} onRemoveFromDeck={setMazo} />
+                                <MazoActual mazo={mazo} onRemoveFromDeck={handleRemoveFromDeck} />
                             </div>
                         </div>
                     </div> 

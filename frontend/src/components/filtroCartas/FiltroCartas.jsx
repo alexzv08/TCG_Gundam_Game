@@ -49,7 +49,7 @@ const FiltroCartas = ({ onFilter, types, colors }) => {
             />
 
             <select name="type" value={filters.type} onChange={handleChange}>
-            <option value="Types">Types</option>
+            <option value="">Types</option>
                 {types.map((type) => (
                 <option key={type} value={type}>
                     {type}
@@ -58,7 +58,7 @@ const FiltroCartas = ({ onFilter, types, colors }) => {
             </select>
 
             <select name="color" value={filters.color} onChange={handleChange}>
-            <option value="color">Color</option>
+            <option value="">Color</option>
                 {colors.map((color) => (
                 <option key={color} value={color}>
                     {color}
