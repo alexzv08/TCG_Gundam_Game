@@ -40,7 +40,7 @@ const CreateDeck = () => {
         }
 
         if (!checkMaxColores(mazo, carta)) {
-            alert(`No puedes añadir más cartas de color ${carta.color}.`);
+            alert(`No puedes añadir mas de 2 colores en el mazo.`);
             return;
         }
         
@@ -123,11 +123,11 @@ const CreateDeck = () => {
                 <div className="w-screen h-screen p-5 pl-10 overflow-hidden">
                     <div className="flex flex-col mt-4">
                         <FiltroCartas cartas={cartas} onFilter={applyFilters} types={types} colors={colors} />
-                        <div className='grid grid-cols-2 gap-4'>
-                            <div className='h-[calc(100dvh-3%)] overflow-y-auto pb-14 pr-2 pt-2'>
+                        <div className='grid grid-cols-4 gap-4'>
+                            <div className='h-[calc(100dvh-2%)] overflow-y-auto pb-14 pr-2 pt-2 col-span-3'>
                                 <ListadoCartas cartas={cartasFiltradas} onAddToDeck={handleAddToDeck} onRestToDeck={handleRemoveFromDeck} />
                             </div>
-                            <div className='h-[calc(100dvh-3%)] overflow-y-auto pb-14 pr-2 pt-2'>
+                            <div className='h-[calc(100dvh-2%)] overflow-y-auto pb-14 pr-2 pt-2'>
                                 <MazoActual mazo={mazo} onRemoveFromDeck={handleRemoveFromDeck} />
                             </div>
                         </div>

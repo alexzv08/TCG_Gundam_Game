@@ -42,13 +42,12 @@ export const checkMaxCopias = (mazo, carta, maxCopias = 4) => {
  */
 export const checkMaxColores = (mazo, carta) => {
     // Obtener los colores únicos presentes en el mazo
-    const coloresUnicos = new Set(mazo.map((c) => c.color));
-
-    // Si el color de la carta ya está en los colores únicos, es válido
+    const coloresUnicos = new Set(mazo.map((c) => c.carta.color));
+        // Si el color de la carta ya está en los colores únicos, es válido
+    console.log(coloresUnicos)
     if (coloresUnicos.has(carta.color)) {
         return true;
     }
-
     // Si aún no está y ya hay 2 colores, no se permite
     return coloresUnicos.size < 2;
 };

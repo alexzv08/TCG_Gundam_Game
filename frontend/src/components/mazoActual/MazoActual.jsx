@@ -7,7 +7,10 @@ const MazoActual = ({ mazo, onRemoveFromDeck }) => {
 
     return (
         <div className="mazo-actual">
-            <h2 className="text-xl text-white">Tu Mazo</h2>
+            <div className="flex items-center justify-between px-2">
+                <h2 className="text-xl text-white">Tu Mazo</h2>
+                <button className="p-1 px-2 text-xl text-white bg-green-400 rounded-lg ">Save</button>
+            </div>
             {mazoSeguro.length > 0 ? (
                 mazoSeguro.map((item) => (
                     <div
