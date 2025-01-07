@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../db/db'); // Suponiendo que tienes un archivo para la configuración de DB
 const { verificarToken } = require('./authMiddleware'); // Importas el middleware para verificar el token
 
-// Endpoint para obtener las cartas
+// Endpoint para obtener todas las cartas
 router.get('/cartas', verificarToken, async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM cartas'); // Realizas la consulta a la DB
@@ -24,11 +24,10 @@ router.post('/guardar-mazo', verificarToken, async (req, res) => {
     try {
         // Insertar el mazo en la tabla `mazos` y obtener el ID del mazo
         const [resultadoMazo] = await db.query(
-            "INSERT INTO mazos (id_usuario, nombre_mazo) VALUES (?, ?)",
+            "INSERT INTO mazos (id_usuario, nombre_mazo, fecha) VALUES (?, ?, NOW())",
             [usuario, nombreMazo]
         );
         const idMazo = resultadoMazo.insertId;
-        console.log(cartas);
 
         // Insertar las cartas del mazo en la tabla `mazo_cartas`
         const valoresCartas = cartas.map((entry) => [
@@ -47,8 +46,27 @@ router.post('/guardar-mazo', verificarToken, async (req, res) => {
         res.status(200).json({ message: "Mazo guardado correctamente." });
 
     } catch (error) {
+        console.error('Error al guardar el mazo:', error);
         res.status(500).json({ error: 'Error al guardar el mazo' });
     }
 });
+
+// Enpoint para recuperar el mazo seleccionado del jugador al entrar en partida
+router.get('/recuperarMazo', async (req, res) => {
+    const playerId = req.body.user;
+    const mazoId = "13" //req.params.mazoId; --> @todo hay que modificar el id de mazo al buscar y crear pamtall apara seleccionar el mazo con el que se va a jugar
+
+    try {
+        const mazo = await db.query(`SELECT c.* , m.cantidad
+                                    FROM cartas c
+                                    JOIN mazo_cartas m ON c.id_carta = m.id_carta AND c.id_coleccion = m.id_coleccion
+                                    WHERE m.id_mazo = ?; `, [mazoId])
+        res.json(mazo);
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: `Error al obtener el mazo del jugador ${playerId} con el mazo ${idMazo}` })
+    }
+
+})
 
 module.exports = router;

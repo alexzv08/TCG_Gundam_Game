@@ -9,6 +9,7 @@ const db = require('../db/db');
 
 const cartasRouter = require('../api/cartas');
 const authRoutes = require('../api/middlewareUser');
+const { initializeGame, handlePlayerAction, getGameState } = require("../logicaGame/game/gameLogic");
 
 const app = express();
 
@@ -23,9 +24,9 @@ const server = http.createServer(app);
 // Configurar Socket.IO en el servidor
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", // Cambia esto a la URL de tu frontend
-        methods: ["GET", "POST"],
-    },
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
 });
 app.use(express.json()); // Para parsear JSON en las peticiones
 
@@ -41,23 +42,30 @@ app.use('/api', authRoutes);
 // Rutas para las cartas
 app.use('/api', cartasRouter); // Ruta para las cartas
 
-// Iniciar el servidor
-server.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
 
+
+
+// Variables para las partidas
+let games = {}; // Almacenar las partidas activas
 
 // Eventos de Socket.IO
 
 // Evento de conexión de un cliente
-io.on('connection', (socket) => {
-    console.log(`Usuario conectado: ${socket.id}`);
+io.on('connect', (socket) => {
+    console.log('Un jugador se ha conectado');
 
-    // Evento de desconexión de un cliente
-    socket.on('disconnect', () => {
-        console.log(`Usuario desconectado: ${socket.id}`);
+    socket.on("playerConnected", (data) => {
+        console.log("Datos recibidos:", data); // Aquí debería mostrar el objeto { playerId: "..." }
+        const playerId = data.playerId;
+        console.log(`Jugador conectado con playerId: ${playerId}`);
     });
 
+    socket.on('disconnect', () => {
+        console.log('Jugador desconectado');
+    });
+});
 
-
+// Iniciar el servidor
+server.listen(PORT, () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

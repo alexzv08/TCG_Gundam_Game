@@ -1,8 +1,9 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CreateDeck from "./paginas/CreateDeck";
 import Register from "./paginas/Register";
 import Login from "./paginas/Login";
+import ZonaDeJuegos from "./paginas/ZonaDeJuegos";
+
 
 // import { useEffect, useState } from 'react';
 // import { io } from 'socket.io-client';
@@ -19,6 +20,7 @@ const App = () => {
             <Route path="/" element={<Login />} /> {/* Ruta para crear mazo */}
             <Route path="/register" element={<Register />} /> {/* Ruta para crear mazo */}
             <Route path="/home" element={<CreateDeck />} /> {/* Ruta para crear mazo */}
+            <Route path="/playgame" element={<ZonaDeJuegos />} /> {/* Ruta para crear mazo */}
           </Routes>
         </main>
       </div>

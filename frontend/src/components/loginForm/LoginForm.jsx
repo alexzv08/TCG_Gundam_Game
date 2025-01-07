@@ -34,13 +34,11 @@ const LoginterForm = () => {
         try {
             // Hacer la solicitud POST al backend para registrar el usuario
             const respuesta = await axios.post('http://localhost:5000/api/login', datos);
-
             if (respuesta.data.token) {
                 // Guardar el token en Local Storage
                 localStorage.setItem("token", respuesta.data.token);
+                localStorage.setItem("user", respuesta.data.usuario);
                 navigate("/home");
-                setMensaje("Login exitoso.");
-                console.log("Token guardado:", respuesta.data.token);
             }
 
 
