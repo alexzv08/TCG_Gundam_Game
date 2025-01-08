@@ -4,7 +4,7 @@ const db = require('../db/db'); // Suponiendo que tienes un archivo para la conf
 const { verificarToken } = require('./authMiddleware'); // Importas el middleware para verificar el token
 
 // Endpoint para obtener todas las cartas
-router.get('/cartas', verificarToken, async (req, res) => {
+router.get('/cartas', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM cartas'); // Realizas la consulta a la DB
         res.json(rows); // Devuelves las cartas en formato JSON
@@ -54,7 +54,7 @@ router.post('/guardar-mazo', verificarToken, async (req, res) => {
 // Enpoint para recuperar el mazo seleccionado del jugador al entrar en partida
 router.get('/recuperarMazo', async (req, res) => {
     const playerId = req.body.user;
-    const mazoId = "13" //req.params.mazoId; --> @todo hay que modificar el id de mazo al buscar y crear pamtall apara seleccionar el mazo con el que se va a jugar
+    const mazoId = "15" //req.params.mazoId; --> @todo hay que modificar el id de mazo al buscar y crear pamtall apara seleccionar el mazo con el que se va a jugar
 
     try {
         const mazo = await db.query(`SELECT c.* , m.cantidad

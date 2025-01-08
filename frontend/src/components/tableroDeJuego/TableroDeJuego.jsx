@@ -1,12 +1,19 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 import { io } from "socket.io-client";
+import Game from "../../utils/game.js"
 const SOCKET_URL  = "http://localhost:5000";
 
-const TableroDeJuego = () => {
+const TableroDeJuego = () => {  
+    
+    // Fase de la partida
+    const [game, setGame] = useState(null);  // Estado para la instancia del juego
 
-        const [playerId,setPlayerId] = useState("");
-        const [deck, setDeck] = useState([]);
+    const [deck, setDeck] = useState([]); // Mazo principal
+    const [battleZone, setBattleZone] = useState([]); // Zona de batalla
+    const [discardZone, setDiscardZone] = useState([]); // Zona de descarte
+    const [hand, setHand] = useState([]);
+    const [deckInitialized, setDeckInitialized] = useState(false); // Bandera para controlar la inicialización del mazo
 
 
     useEffect(() => {
@@ -16,7 +23,6 @@ const TableroDeJuego = () => {
     
             // Generar un playerId único para este jugador
             const storedPlayerId = localStorage.getItem("user");
-            setPlayerId(storedPlayerId);
     
             // Emitir el evento 'playerConnected' con el playerId al servidor
             socket.emit("playerConnected", { playerId: storedPlayerId });
@@ -24,62 +30,138 @@ const TableroDeJuego = () => {
     
         socket.on("disconnect", () => {
         });
-    
-        // Peticion del mazo
-        const fetchDeck = async () => {
-            try {
-                const response = await fetch(`http://localhost:5000/api/recuperarMazo`,{
-                    headers: {
-                        user: localStorage.getItem("user"),
-                        mazoId : "13"
-                    }
-                });
-                const data = await response.json();
-                setDeck(data[0]); // Guardamos el mazo en el estado
-            } catch (error) {
-                console.error("Error al obtener el mazo:", error);
-            }
-        };
 
-        fetchDeck()
+        const newGame = new Game(); // Creamos una nueva instancia de Game
+        setGame(newGame);
+
         return () => {
             socket.disconnect(); // Asegurarse de cerrar la conexión al desmontar el componente
         };
-    }, [playerId]);
+    }, []);
+
+
+    // Función para cambiar la fase
+    const avanzarFase = () => {
+        game.executePhase()
+        game.advancePhase(); // Avanzamos a la siguiente fase
+    };
+
+    // Función para ejecutar la fase actual
+    const ejecutarFase = () => {
+        if (game) {
+            game.executePhase();  // Ejecutar la fase actual en la clase Game
+            setGame(game.currentState);  // Actualizar el estado con la fase actual
+        }
+    };
+
+
+
+    const initializeDeck = async () => {
+        try {
+            const response = await fetch("http://localhost:5000/api/recuperarMazo");
+            const data = await response.json();
+
+            // Generamos y mezclamos el mazo
+            let generatedDeck = buildDeck(data[0]);
+            generatedDeck = shuffleDeck(generatedDeck);
+            
+            await setDeck(generatedDeck); // Guardamos el mazo en el estado
+
+            setDeckInitialized(true);
+
+        } catch (error) {
+            console.error("Error al recuperar el mazo:", error);
+        }
+    };
+
+    //Recuperamos el mazo y lo montamos
+    const buildDeck = (cardsData) => {
+        const deck = [];
+        cardsData.forEach((card) => {
+            console.log(card);  // Asegúrate de ver los datos que recibes
+            for (let i = 0; i < card.cantidad; i++) {
+                deck.push({ ...card });
+            }
+        });
+        console.log(deck);  // Verifica que las cartas estén correctamente construidas
+        return deck;
+    };
     
+    //Se baraja el deck
+    const shuffleDeck = (deck) => {
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        return deck;
+    };
+    
+    // Fase de draw
+    const handleDrawCard = (cantidad) => {
+        console.log(`Intentando robar ${cantidad} cartas`);
+        // Solo roba si hay suficientes cartas en el mazo
+        if (deck.length >= cantidad) {
+            const cardsToDraw = deck.slice(0, cantidad);
+            const updatedDeck = deck.slice(cantidad);
+            setDeck(updatedDeck); // Actualizamos el mazo
+            setHand((prevHand) => [...prevHand, ...cardsToDraw]); // Agregamos las cartas robadas a la mano
+        } else {
+            // Si hay menos cartas que la cantidad solicitada, roba todas las cartas restantes
+            setHand((prevHand) => [...prevHand, ...deck]);
+            setDeck([]); // El mazo se vacía
+        }
+    };
+
+    // useEffect para ejecutar handleDrawCard cuando deck se haya actualizado
+    useEffect(() => {
+        console.log(`Mazo después de robar:`, deck);  // Verifica el mazo cada vez que se actualiza
+        if (deck.length > 0) {
+            handleDrawCard(5); // Roba 5 cartas cuando el deck ya está cargado
+        }
+    }, [deckInitialized]);
+
+    const renderHand = () => {
+        return hand.map((card, index) => (
+            <div key={`${card.id_carta}-${index}`} className="card"
+            draggable
+            onDragStart={(e) => handleDragStart(e, card)}>
+                <div className='relative'>
+                    <img
+                        src={`../../../public/imgCards/${card.id_coleccion}-${card.id_carta}.webp`}
+                        alt={card.nombre}
+                        className="w-24 h-32"
+                        />
+                    <div className='text-xl absolute text-red-600  bottom-0 right-6 h-[30px] w-[30px] text-center'>{card.ap}</div>
+                    <div className='text-xl absolute right-0 text-red-600  bottom-0 h-[30px] w-[30px]'>{card.hp}</div>
+                </div>
+            </div>
+        ));
+    };
+
     // Manejamos el drag and drop de las cartas
     const handleDragStart = (e, card) => {
+        console.log(card)
         e.dataTransfer.setData("card", JSON.stringify(card));
     };
     
     const handleDrop = (e, zone) => {
-        // Prevenimos el comportamiento predeterminado (para permitir el drop)
         e.preventDefault();
-        
-        // Obtener los datos de la carta arrastrada
-        const cardData = JSON.parse(e.dataTransfer.getData("card"));
-        
-        // Lógica para mover la carta a la zona correspondiente
-        // En este caso, vamos a actualizar el estado de las cartas para reflejar el cambio de zona
-        
-        // Dependiendo de la zona, tenemos que actualizar los datos en el estado de las cartas
-        setDeck((prevDeck) => {
-            return prevDeck.map((card) => {
-            if (card.id_carta === cardData.id_carta) {
-                // Aquí deberías actualizar el campo que guarda la zona en la que está la carta
-                // Supongamos que la carta tiene un campo `zona` para saber dónde está
-                return {
-                ...card,
-                zona: zone, // Actualizamos la zona de la carta
-                };
-            }
-            return card;
-            });
-        });
-        
-        // También podrías realizar más acciones dependiendo de la zona a la que se haya movido la carta
-        console.log(`La carta ${cardData.nombre} ha sido movida a la zona ${zone}`);
-        };
+    
+        const cardData = JSON.parse(e.dataTransfer.getData("card")); // Obtenemos la carta arrastrada
+    
+        if (zone === "battle") {
+            // Mover carta desde la mano al área de batalla
+            setHand((prevHand) => prevHand.filter((card) => card.id_carta !== cardData.id_carta)); // Quitamos la carta de la mano
+            setBattleZone((prevZone) => [...prevZone, cardData]); // Añadimos la carta a la zona de batalla
+        } else if (zone === "discard") {
+            // Mover carta desde la mano al área de descarte
+            setHand((prevHand) => prevHand.filter((card) => card.id_carta !== cardData.id_carta)); // Quitamos la carta de la mano
+            setDiscardZone((prevZone) => [...prevZone, cardData]); // Añadimos la carta a la zona de descarte
+        }
+    
+        console.log(`Carta ${cardData.nombre} movida a la zona ${zone}`);
+    };
+
 
     return (
     <main className="relative w-full h-auto">
@@ -103,31 +185,55 @@ const TableroDeJuego = () => {
 
                 <div className="flex flex-col items-center col-span-9 p-4 space-y-4 border border-gray-500">
                     <h2 className="text-lg font-bold">Battle Area</h2>
-                    <div className="grid w-full grid-cols-3 gap-2" onDrop={(e) => handleDrop(e, "battle")}>
-                        
+                    <div
+                        className="grid w-full h-full grid-cols-12 gap-2 border border-gray-500"
+                        onDrop={(e) => handleDrop(e, "battle")}
+                        onDragOver={(e) => e.preventDefault()} // Importante para habilitar el dropeo
+                    >
+                        {battleZone.map((card, index) => (
+                            <div key={`${card.id_carta}-${index}`} className="card">
+                                <img
+                                    src={`../../../public/imgCards/${card.id_coleccion}-${card.id_carta}.webp`}
+                                    alt={card.nombre}
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
 
                 <div className="flex flex-col items-center col-span-1 p-4 space-y-4 border border-gray-500">
                     <h2 className="text-lg font-bold"> Deck Area</h2>
-                    <div className="w-24 h-32 border border-gray-500 border-dashed">
+                    <div className="relative w-24 h-32 border border-gray-500 border-dashed">
                         {deck.map((card, index) => (
-                        // Aquí usamos un ciclo para mostrar tantas instancias de la carta como su cantidad
-                            [...Array(card.cantidad)].map((_, i) => (
-                                <div
-                                key={`${card.id_carta}-${i}`} // Asegúrate de tener una clave única
-                                className="relative flex flex-col items-center justify-between"
-                                draggable
-                                onDragStart={(e) => handleDragStart(e, card)}
-                                >
-                                <img src={`../../../public/imgCards/${card.id_coleccion}-${card.id_carta}.webp`} alt={card.nombre} className="absolute object-cover w-24 h-32"/>
-                                </div>
-                            ))
+                            <div
+                                key={`${card.id_carta}-${index}`}
+                                className="card"
+                            >
+                                <img
+                                    src={`../../../public/imgCards/${card.id_coleccion}-${card.id_carta}.webp`}
+                                    alt={card.nombre}
+                                    className="absolute top-0 left-0 w-full h-full cursor-pointer "
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>
 
                 <div className="flex flex-col items-center col-span-2 p-4 space-y-4 border border-gray-500">
+                    <button
+                        onClick={() => handleDrawCard(1)} // Este botón roba 1 carta cuando se hace clic
+                        className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-700"
+                    >
+                        Draw
+                    </button>
+                    <div>
+                    <button onClick={avanzarFase} className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-700">
+                        Avanzar  fase
+                    </button>
+                    <button onClick={ejecutarFase} className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-700">
+                        Ejecutar Fase Actual
+                    </button>
+                    </div>
                 </div>
 
                 <div className="flex flex-col items-center col-span-9 p-4 space-y-4 border border-gray-500">
@@ -140,16 +246,6 @@ const TableroDeJuego = () => {
                                 </div>
                             </div>
                             <div className="flex items-center justify-center col-span-10 gap-5 border border-gray-500 " >
-                                <div className="w-24 h-32 rotate-45 border border-gray-500 border-dashed">resource rotate</div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
                                 <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
                             </div>
                     </div>
@@ -160,17 +256,8 @@ const TableroDeJuego = () => {
                     <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
                 </div></div>
         </div>
-        <div className="absolute left-0 right-0 mx-auto -bottom-20  h-[140px] w-screen border border-gray-500 flex items-center justify-center bg-gray-100 opacity-20 gap-5">
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
-                                <div className="w-24 h-32 border border-black border-dashed"></div>
+        <div className="absolute left-0 right-0 mx-auto -bottom-20  h-[140px] w-screen border border-gray-500 flex items-center justify-center bg-gray-100 gap-5">
+            {renderHand()}
         </div>
 </main>
 

@@ -3,9 +3,7 @@ export const obtenerCartas = async () => {
     try {
         const token = localStorage.getItem('token');
         const response = await fetch('http://localhost:5000/api/cartas',{
-            body: {
-                Authorization: `Bearer ${token}`
-            }
+
     }); // Ajusta la URL si es necesario
         const data = await response.json();
         return data; // Devuelve las cartas
