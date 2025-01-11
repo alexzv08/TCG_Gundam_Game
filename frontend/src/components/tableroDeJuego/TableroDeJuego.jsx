@@ -2,20 +2,34 @@
 import { useEffect, useState } from 'react';
 import { io } from "socket.io-client";
 import Game from "../../utils/game.js"
+import ConfirmModal from '../modal/Modal.jsx';
+import  { initializeDeck, shieldAdd, baseTokenAdd, resourceAdd }  from "../../utils/funcionesGame.js"; 
 const SOCKET_URL  = "http://localhost:5000";
 
 const TableroDeJuego = () => {  
     
     // Fase de la partida
-    const [game, setGame] = useState(null);  // Estado para la instancia del juego
+    const [game, setGame] = useState(new Game());  // Estado para la instancia del juego
 
     const [deck, setDeck] = useState([]); // Mazo principal
     const [battleZone, setBattleZone] = useState([]); // Zona de batalla
-    const [discardZone, setDiscardZone] = useState([]); // Zona de descarte
     const [hand, setHand] = useState([]);
+    const [discardZone, setDiscardZone] = useState([]); // Zona de descarte
+    const [shieldArea, setShieldArea] = useState([])
+    const [baseArea, setBaseArea] = useState([])
+    const [resourceDeck, setResourceDeck] = useState([])
+    const [resourceArea, setResourceArea] = useState([])
+
     const [deckInitialized, setDeckInitialized] = useState(false); // Bandera para controlar la inicialización del mazo
+    
+    const[jugadorInicial, setJugadorInicial] = useState("")
+    const[esTuTurno, setEsTuTurno] = useState(Boolean)
+    //Estados para mostrar el modal
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
 
 
+    const [initialized, setInitialized] = useState(false);
     useEffect(() => {
         const socket = io(SOCKET_URL);
     
@@ -27,19 +41,50 @@ const TableroDeJuego = () => {
             // Emitir el evento 'playerConnected' con el playerId al servidor
             socket.emit("playerConnected", { playerId: storedPlayerId });
         });
-    
-        socket.on("disconnect", () => {
+        
+
+        const idPartida = "123"; // Este ID puede ser dinámico
+        socket.emit("unirseAPartida", idPartida, localStorage.getItem("user"));
+
+        // Escuchar el evento del jugador inicial
+        socket.on("jugadorInicial", (data) => {
+            console.log("Jugador inicial recibido:", data);
+            setJugadorInicial(data.jugadorInicial);
+            setEsTuTurno(data.esTuTurno);
+
+            // Modal de inicio
+            setModalMessage(`Empieza el jugador: ${data.jugadorInicial}`);
+            setShowModal(true);
         });
 
-        const newGame = new Game(); // Creamos una nueva instancia de Game
-        setGame(newGame);
+        socket.on("esperandoOponente", (data) => {
+            console.log("espero al oponente")
+            setModalMessage(data.mensaje); // "Esperando al oponente..."
+            setShowModal(true);
+        });
+
+        socket.on("disconnect", () => {
+        });
 
         return () => {
             socket.disconnect(); // Asegurarse de cerrar la conexión al desmontar el componente
         };
     }, []);
 
+    useEffect(() =>{
+        const socket = io(SOCKET_URL);
+        
+        socket.on("jugadorInicial", (data) => {
+            console.log(data)
+            setJugadorInicial(data.jugadorInicial);
+        });
 
+        socket.on("esperandoOponente", (data) => {
+            console.log("espero al oponente")
+            setModalMessage(data.mensaje); // "Esperando al oponente..."
+            setShowModal(true);
+        });
+    })
     // Función para cambiar la fase
     const avanzarFase = () => {
         game.executePhase()
@@ -55,70 +100,80 @@ const TableroDeJuego = () => {
     };
 
 
-
-    const initializeDeck = async () => {
-        try {
-            const response = await fetch("http://localhost:5000/api/recuperarMazo");
-            const data = await response.json();
-
-            // Generamos y mezclamos el mazo
-            let generatedDeck = buildDeck(data[0]);
-            generatedDeck = shuffleDeck(generatedDeck);
-            
-            await setDeck(generatedDeck); // Guardamos el mazo en el estado
-
-            setDeckInitialized(true);
-
-        } catch (error) {
-            console.error("Error al recuperar el mazo:", error);
-        }
-    };
-
-    //Recuperamos el mazo y lo montamos
-    const buildDeck = (cardsData) => {
-        const deck = [];
-        cardsData.forEach((card) => {
-            console.log(card);  // Asegúrate de ver los datos que recibes
-            for (let i = 0; i < card.cantidad; i++) {
-                deck.push({ ...card });
-            }
-        });
-        console.log(deck);  // Verifica que las cartas estén correctamente construidas
-        return deck;
-    };
-    
-    //Se baraja el deck
-    const shuffleDeck = (deck) => {
-        for (let i = deck.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [deck[i], deck[j]] = [deck[j], deck[i]];
-        }
-        return deck;
-    };
-    
-    // Fase de draw
-    const handleDrawCard = (cantidad) => {
-        console.log(`Intentando robar ${cantidad} cartas`);
-        // Solo roba si hay suficientes cartas en el mazo
-        if (deck.length >= cantidad) {
-            const cardsToDraw = deck.slice(0, cantidad);
-            const updatedDeck = deck.slice(cantidad);
-            setDeck(updatedDeck); // Actualizamos el mazo
-            setHand((prevHand) => [...prevHand, ...cardsToDraw]); // Agregamos las cartas robadas a la mano
-        } else {
-            // Si hay menos cartas que la cantidad solicitada, roba todas las cartas restantes
-            setHand((prevHand) => [...prevHand, ...deck]);
-            setDeck([]); // El mazo se vacía
-        }
-    };
-
     // useEffect para ejecutar handleDrawCard cuando deck se haya actualizado
+    // useEffect(() => {
+    //     if (!deckInitialized && !initialized && !jugadorInicial) {
+    //         setInitialized(true); // Marcamos que ya ejecutamos la lógica
+    //         setModalMessage(`Empieza el jugador: ${jugadorInicial}`);
+    //         setShowModal(true);
+    //     }
+    // }, [deckInitialized,initialized,jugadorInicial]);
+
     useEffect(() => {
-        console.log(`Mazo después de robar:`, deck);  // Verifica el mazo cada vez que se actualiza
-        if (deck.length > 0) {
-            handleDrawCard(5); // Roba 5 cartas cuando el deck ya está cargado
+        console.log(game.currentState)
+        if(game.currentState == "MULLIGAN"){
+            console.log("vamos bien")
+            setModalMessage("¿Quieres hacer mulligan?"); // Mensaje inicial del modal
+            setShowModal(true);
         }
-    }, [deckInitialized]);
+        if(game.currentState == "SHIELD_FORCE"){
+            console.log("montamos las vidas")
+            shieldAdd(setShieldArea, setDeck, deck)
+            game.advancePhase()
+        }
+
+        if(game.currentState == "TOKEN_BASE"){
+            console.log("montamos pongo la base")
+            baseTokenAdd(setBaseArea)
+            console.log(baseArea)
+            game.advancePhase()
+        }
+
+        if(game.currentState == "TOKEN_RESOURCE"){
+            resourceAdd(setResourceArea,setResourceDeck)
+            console.log(resourceArea)
+            console.log(resourceDeck)
+            // game.advancePhase()
+        }
+    },[game.currentState])
+
+
+    useEffect(() => {
+        // if (shieldArea.length > 0) {
+        //     console.log(deck)
+        //     console.log('shieldArea actualizado:', shieldArea);
+        // }
+    }, [shieldArea]);
+
+    useEffect(() => {
+
+    }, [baseArea])
+
+    useEffect(() => {
+        
+    }, [resourceDeck])
+
+    useEffect(() => {
+        console.log(resourceArea)
+        
+    }, [resourceArea])
+
+    const handleConfirm = () => {
+        setShowModal(false); // Ocultamos el modal
+        if ( game.currentState == "INITIAL_DRAW" || game.currentState == "MULLIGAN") {
+            initializeDeck(setDeck, setHand, setDeckInitialized); // Lógica para inicializar el mazo
+            game.advancePhase()
+        }
+    };
+
+    const handleCancel = () => {
+        setShowModal(false); // Ocultamos el modal
+        if (game.currentState == "MULLIGAN") {
+            game.advancePhase()
+        }
+        console.log("El usuario decidió cancelar.");
+    };
+
 
     const renderHand = () => {
         return hand.map((card, index) => (
@@ -165,6 +220,17 @@ const TableroDeJuego = () => {
 
     return (
     <main className="relative w-full h-auto">
+
+{/* Renderizamos el modal */}
+        <ConfirmModal
+                show={showModal}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+                className="absolute top-0 z-20"
+                message={modalMessage}
+            />
+
+
         <div className="p-2 m-0 text-white bg-gray-800">
             <div className="grid w-full grid-cols-12 gap-4 py-2 mx-auto">
                 <div className="flex flex-col items-center col-span-2 p-4 space-y-4 border border-gray-500">
@@ -173,12 +239,32 @@ const TableroDeJuego = () => {
                         <div className="flex flex-col items-center gap-2">
                             <h2 className="text-lg font-bold">Shields</h2>
                             <div className="relative w-24 h-32 border border-gray-500 border-dashed">
-                                <div className="absolute inset-0 z-10 flex items-center justify-center text-3xl">5</div>
+                                <div className="absolute inset-0 z-10 flex items-center justify-center text-3xl text-white ">{shieldArea.length}</div>
+                                <div>
+                                    {shieldArea.length > 0 ? (
+                                    <img src="../../../public/imgCards/R-001.webp" alt="Imagen de escudo" 
+                                    className='opacity-30'/>
+                                    ) : (
+                                    null // No muestra nada si shieldArea está vacío
+                                    )}
+                                </div>
                             </div>
                         </div>
                         <div className="flex flex-col items-center gap-2" >
                             <h2 className="text-lg font-bold">Base</h2>
-                            <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
+                            <div className="w-24 h-32 border border-gray-500 border-dashed">
+                                {baseArea.map((card, index) => (
+                                    <div
+                                        key={`${card.id_carta}-${index}`}
+                                        className="card"
+                                    >
+                                        <img
+                                            src={`../../../public/imgCards/${card.id_coleccion}-${card.id_carta}.webp`}
+                                            alt={card.nombre}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -221,7 +307,7 @@ const TableroDeJuego = () => {
 
                 <div className="flex flex-col items-center col-span-2 p-4 space-y-4 border border-gray-500">
                     <button
-                        onClick={() => handleDrawCard(1)} // Este botón roba 1 carta cuando se hace clic
+                        // onClick={() => handleDrawCard(1)} // Este botón roba 1 carta cuando se hace clic
                         className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-700"
                     >
                         Draw
@@ -243,10 +329,31 @@ const TableroDeJuego = () => {
                                 <h2 className="text-lg font-bold">Resource Deck</h2>
                                 <div className="relative w-24 h-32 border border-gray-500 border-dashed">
                                     <div className="absolute inset-0 z-10 flex items-center justify-center text-3xl">5</div>
+                                    {resourceDeck.map((card, index) => (
+                                        <div key={`${card.id_carta}-${index}`} className="card">
+                                            <img
+                                                src={`../../../public/imgCards/${card.id_coleccion}-${card.id_carta}.webp`}
+                                                alt={card.nombre}
+                                                className="absolute top-0 left-0 w-full h-full cursor-pointer "
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                             <div className="flex items-center justify-center col-span-10 gap-5 border border-gray-500 " >
-                                <div className="w-24 h-32 border border-gray-500 border-dashed"></div>
+                                {Array.isArray(resourceArea) ? (
+                                    resourceArea.map((card, index) => (
+                                        <div key={`${card.id_carta}-${index}`} className="card">
+                                            <img
+                                                src={`../../../public/imgCards/${card.id_coleccion}-${card.id_carta}.webp`}
+                                                alt={card.nombre}
+                                                className="left-0 w-24 h-32 cursor-pointer"
+                                            />
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p></p>
+                                )}
                             </div>
                     </div>
                 </div>

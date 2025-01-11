@@ -46,4 +46,9 @@ function endTurn() {
     gameState.currentTurn = players[nextIndex];
 }
 
-module.exports = { initializeGame, handlePlayerAction };
+
+function whoStart() {
+
+}
+
+module.exports = { initializeGame, handlePlayerAction, whoStart };

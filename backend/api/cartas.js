@@ -69,4 +69,26 @@ router.get('/recuperarMazo', async (req, res) => {
 
 })
 
+router.get('/recuperarBaseToken', async (req, res) => {
+    try {
+        const mazo = await db.query(`select * from cartas where id_coleccion = "EXB" and id_carta = "001"; `)
+        res.json(mazo);
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: `Error al obtener base ex` })
+    }
+
+})
+
+router.get('/recuperarResource', async (req, res) => {
+    try {
+        const mazo = await db.query(`select * from cartas where (id_coleccion = "EXR" and id_carta = "001") or (id_coleccion = "R" and id_carta = "001") `)
+        res.json(mazo);
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: `Error al obtener resource` })
+    }
+
+})
+
 module.exports = router;

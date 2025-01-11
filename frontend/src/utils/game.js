@@ -1,3 +1,6 @@
+// import { buildDeck, shuffleDeck, drawInitialHand} from "./funcionesGame";
+// import ConfirmModal from "../components/modal/Modal";
+
 export const GameStates = {
     START_PHASE: {
         name: "START_PHASE",
@@ -104,7 +107,6 @@ class Game {
                 const nextPhase = currentPhases[currentIndex + 1];
     
                 if (nextPhase === GameStates.END_PHASE.phase.END_PHASE) {
-                    console.log("Volviendo a START_TURN.phase.UNSUSPEND_PHASE");
                     this.changePhase(GameStates.START_TURN.phase.UNSUSPEND_PHASE);
                     return;
                 }
@@ -124,7 +126,6 @@ class Game {
                     }
                 } else {
                     // Si estamos en el último grupo y fase, volvemos al inicio
-                    console.log("Terminando el turno, reiniciando al inicio.");
                     this.currentGroupIndex = 1; // Reiniciamos al índice del grupo START_TURN
                     this.changePhase(GameStates.START_TURN.phase.UNSUSPEND_PHASE);
                 }
@@ -133,14 +134,8 @@ class Game {
             console.error("El grupo actual no tiene fases definidas.");
         }
 
-        console.log("La fase actual es:", this.currentState);
+        this.executePhase()
     }
-    
-    
-    
-    
-    
-    
     
 
     changePhase(newState) {
@@ -159,6 +154,7 @@ class Game {
 
     mulligan() {
         console.log("Ejecutando la fase de mulligan.");
+        funciooon()
     }
 
     unsuspendPhase() {
@@ -176,6 +172,10 @@ class Game {
     endPhase() {
         console.log("Finalizando la partida.");
     }
+}
+
+const funciooon = () =>{
+    console.log("hey que funciono")
 }
 
 export default Game;
