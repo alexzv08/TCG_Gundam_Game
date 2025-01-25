@@ -39,6 +39,7 @@ export const initializeDeck = async (setDeck, setHand, setDeckInitialized) => {
         setDeck(remainingDeck);
         setHand(initialHand);
         setDeckInitialized(true);
+        console.log(remainingDeck)
     } catch (error) {
         console.error("Error al inicializar el mazo:", error);
     }

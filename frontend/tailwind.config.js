@@ -5,8 +5,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      rotate: {
+        "x-45": "45deg",
+        "-x-45": "-45deg",
+        "y-15": "15deg",
+        "-y-15": "-15deg",
+      },
+    },
   },
-  plugins: [],
+  plugins: [
+    require("@xpd/tailwind-3dtransforms")
+  ],
 }
 

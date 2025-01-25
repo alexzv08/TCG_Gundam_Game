@@ -10,6 +10,7 @@ const db = require('../db/db');
 const cartasRouter = require('../api/cartas');
 const authRoutes = require('../api/middlewareUser');
 const { initializeGame, handlePlayerAction, getGameState } = require("../logicaGame/game/gameLogic");
+const { createRoom, joinRoom } = require('../logicaGame/waitingRooms/waitingRooms');
 
 const partidas = {};
 
@@ -45,91 +46,60 @@ app.use('/api', authRoutes);
 app.use('/api', cartasRouter); // Ruta para las cartas
 
 
-
+function randomStartPlayer(players) {
+    return players[Math.floor(Math.random() * players.length)];
+}
 
 // Variables para las partidas
-let games = {}; // Almacenar las partidas activas
-
+let rooms = []; // Las salas activas
+let playerRooms = {}; // Mapea socket.id -> room.id
 // Eventos de Socket.IO
 
-// Evento de conexión de un cliente
-io.on('connect', (socket) => {
-    console.log('Un jugador se ha conectado');
+io.on('connection', (socket) => {
+    console.log('Player connected:', socket.id);
 
-    socket.on("playerConnected", (data) => {
-        console.log("Datos recibidos:", data); // Aquí debería mostrar el objeto { playerId: "..." }
-        const playerId = data.playerId;
-        console.log(`Jugador conectado con playerId: ${playerId}`);
+    socket.on("buscarSala", (user) => {
+        console.log(user, "esta buscndo partida")
+        let roomFound = rooms.find(room => room.players.length < 2);
+
+        if (roomFound) {
+            // Sala encontrada
+            roomFound.players.push(user);
+            playerRooms[user] = roomFound.id;
+            socket.join(roomFound.id);
+
+            console.log(`Jugador ${user} se unió a la sala ${roomFound.players}`);
+            io.to(roomFound.id).emit('salaEncontrada', roomFound, randomStartPlayer(roomFound.players));
+        } else {
+            // Crear una nueva sala
+            const newRoom = { id: `room-${Date.now()}`, players: [user] };
+            rooms.push(newRoom);
+            playerRooms[user] = newRoom.id;
+            socket.join(newRoom.id);
+
+            console.log(`Jugador ${user} creó la sala ${newRoom.id}`);
+            socket.emit('salaCreada', newRoom);
+        }
+        console.log(socket.rooms)
+    })
+
+    socket.on('battleAreaUpdated', (battleArea) => {
+        console.log("battleAreaUpdated", battleArea)
     });
 
     socket.on('disconnect', () => {
-        // Buscar si el jugador desconectado pertenece a alguna partida
-        for (let idPartida in games) {
-            const partida = games[idPartida];
-            const jugadorIndex = partida.jugadores.findIndex(player => player.socket.id === socket.id);
-
-            if (jugadorIndex !== -1) {
-                // El jugador se ha desconectado, eliminamos su socket
-                partida.jugadores.splice(jugadorIndex, 1);
-                console.log(`Jugador ${partida.jugadores[jugadorIndex].user} ha desconectado`);
-
-                // Comprobamos si la partida está completa
-                checkPlayersConnection(idPartida);
-                break;
+        console.log('Jugador desconectado', socket.id);
+        // Si el jugador estaba en alguna sala, eliminarlo
+        const roomId = playerRooms[socket.id];
+        if (roomId) {
+            const room = rooms.find(r => r.id === roomId);
+            if (room) {
+                room.players = room.players.filter(id => id !== socket.id);
             }
+            delete playerRooms[socket.id]; // Limpiar el registro del jugador
         }
+        console.log(socket.rooms)
     });
-
-
-    socket.on("unirseAPartida", (idPartida, user) => {
-        console.log(idPartida, user)
-        if (!partidas[idPartida]) {
-            // Si la partida no existe, la creamos
-            partidas[idPartida] = {
-                jugadores: [],
-                jugadorInicial: null, // Aquí decidiremos el jugador inicial más adelante
-            };
-        }
-
-        const partida = partidas[idPartida];
-
-        // Añadir al jugador a la partida
-        if (!partida.jugadores.find(jugador => jugador.user === user)) {
-            partida.jugadores.push({ socket, user });
-        }
-
-
-        console.log(partida)
-        // Si hay dos jugadores, determinamos el jugador inicial
-        if (partida.jugadores.length === 2) {
-            const jugadorInicialIndex = Math.random() < 0.5 ? 0 : 1;
-            const jugadorInicial = partida.jugadores[jugadorInicialIndex];
-
-            partida.jugadorInicial = jugadorInicial.user;
-            // Enviamos el resultado a ambos jugadores
-            partida.jugadores.forEach(({ socket }, index) => {
-                socket.emit("jugadorInicial", {
-                    jugadorInicial: jugadorInicial.user, // Enviamos el nombre del usuario inicial
-                    esTuTurno: index === jugadorInicialIndex, // Indicar si es su turno
-                });
-            });
-        }
-
-        // Comprobar si ambos jugadores están conectados
-        checkPlayersConnection(partida);
-    });
-
-    function checkPlayersConnection(partida) {
-
-        console.log(partida)
-        if (partida && partida.jugadores.length < 2) {
-            // Si falta un jugador, avisamos al otro jugador
-            partida.jugadores.forEach(({ socket }) => {
-                socket.emit("esperandoOponente", { mensaje: "Esperando al oponente..." });
-            });
-        }
-    }
-
 });
 
 // Iniciar el servidor
