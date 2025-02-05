@@ -1,52 +1,65 @@
-let gameState = {
-    players: {}, // Contendrá información de los jugadores
-    currentTurn: null, // El jugador que tiene el turno actual
-};
-
-// Función para inicializar el estado del juego
-function initializeGameState(players) {
-    gameState = {
-        players: {
-            [players[0]]: {
-                life: 6,
-                deck: generateDeck(), // Genera un mazo aleatorio
-                hand: [],
-                field: [],
-                graveyard: [],
-            },
-            [players[1]]: {
-                life: 6,
-                deck: generateDeck(),
-                hand: [],
-                field: [],
-                graveyard: [],
-            },
-        },
-        currentTurn: players[0],
-    };
-
-    // Reparte cartas iniciales
-    for (const player of players) {
-        for (let i = 0; i < 5; i++) {
-            drawCard(player);
-        }
+// const phases = [
+//     "start_phase", "active_step", "start_step",
+//     "draw_phase", "resource_phase", "main_phase",
+//     "attack_step", "block_step", "action_step_battle",
+//     "damage_step", "battle_end_step",
+//     "end_phase", "action_step_end", "end_step", "hand_step", "cleanup_step"
+// ];
+function nextPhase(gameState) {
+    gameState.currentPhaseIndex = (gameState.currentPhaseIndex + 1) % gameState.phases.length;
+    if (gameState.currentPhaseIndex === 0) {
+        // Cambiar de jugador al final del turno
+        gameState.currentPlayer = gameState.currentPlayer === gameState.players.player1 ? gameState.players.player2 : gameState.players.player1;
     }
-
-    return gameState;
+    return gameState.phases[gameState.currentPhaseIndex];
 }
 
-// Función para robar una carta
-function drawCard(playerId) {
-    const player = gameState.players[playerId];
-    if (player.deck.length > 0) {
-        const card = player.deck.shift();
-        player.hand.push(card);
+function handlePhase(phase, gameState) {
+    switch (phase) {
+        case "Start":
+            handleStartPhase(gameState);
+            break;
+        case "Draw":
+            handleDrawPhase(gameState);
+            break;
+        case "Resource":
+            handleResourcePhase(gameState);
+            break;
+        case "Main":
+            handleMainPhase(gameState);
+            break;
+        case "End":
+            handleEndPhase(gameState);
+            break;
+        default:
+            console.log("Unknown phase");
     }
 }
 
-// Generar un mazo aleatorio (simulado por ahora)
-function generateDeck() {
-    return Array.from({ length: 30 }, (_, i) => ({ id: i, name: `Card ${i + 1}` }));
+function handleStartPhase(gameState) {
+    // Activar todas las cartas en estado "rested"
+    // Activar efectos de "Start Step"
+    console.log("Start Phase");
 }
 
-module.exports = { gameState, initializeGameState, drawCard };
+function handleDrawPhase(gameState) {
+    // El jugador activo roba una carta
+    console.log("Draw Phase");
+}
+
+function handleResourcePhase(gameState) {
+    // El jugador activo coloca una carta de recurso
+    console.log("Resource Phase");
+}
+
+function handleMainPhase(gameState) {
+    // El jugador activo puede jugar cartas, activar efectos, atacar, etc.
+    console.log("Main Phase");
+}
+
+function handleEndPhase(gameState) {
+    // Action Step, End Step, Hand Step, Cleanup Step
+    console.log("End Phase");
+}
+
+module.exports = { handlePhase, nextPhase };
