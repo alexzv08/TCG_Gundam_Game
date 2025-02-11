@@ -39,19 +39,22 @@ export const initializeDeck = async (setDeck, setHand, setDeckInitialized) => {
         setDeck(remainingDeck);
         setHand(initialHand);
         setDeckInitialized(true);
-        console.log(remainingDeck)
     } catch (error) {
         console.error("Error al inicializar el mazo:", error);
     }
 };
 
-export const shieldAdd = async (setShieldArea,setDeck, deck) => {
-    const initialShield = deck.slice(0, 6)
-    const remainingDeck = deck.slice(6)
+export const shieldAdd = (setShieldArea, setDeck, deck) => {
+    setShieldArea(prevShield => {
+        const initialShield = deck.slice(0, 6);
+        return initialShield;
+    });
 
-    await setShieldArea(initialShield)
-    await setDeck(remainingDeck);
-}
+    setDeck(prevDeck => {
+        const remainingDeck = deck.slice(6);
+        return remainingDeck;
+    });
+};
 
 export const baseTokenAdd = async(setBaseArea) =>{
     try {
@@ -73,14 +76,12 @@ export const resourceAdd = async(setResourceArea,setResourceDeck) =>{
         // buildResourceDeck()
         await setResourceDeck(buildResourceDeck(data[0]))
         await setResourceArea(placeExResourceP2(data[0]))
-        console.log(data[0][1])
     } catch (error) {
         console.error("Error al recuperar el token base: ",error)
     }
 }
 
 const buildResourceDeck = (data)=> {
-    console.log(data[1])
     const deckResource = [];
     for (let i = 0; i < 10; i++) {
         deckResource.push({ ...data[1] });
@@ -89,7 +90,6 @@ const buildResourceDeck = (data)=> {
 }
 
 const placeExResourceP2 = (data)=> {
-    console.log(data[0])
     const exResource = []
     exResource.push({ ...data[0] });
 

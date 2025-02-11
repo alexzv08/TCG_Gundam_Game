@@ -5,7 +5,7 @@ import Tablero from "../components/tableros/Tablero";
 import TableroRival from "../components/tableros/TableroRival";
 import CartaModal from '../components/modalCarta/CartaModal.jsx';
 import ConfirmModal from '../components/modal/Modal';
-import  { initializeDeck}  from "../utils/funcionesGame.js"; 
+import  { initializeDeck, shieldAdd}  from "../utils/funcionesGame.js"; 
 
 const socket = io('http://localhost:5000');
 
@@ -28,8 +28,13 @@ const Prueba = () => {
     const [battleArea, setBattleArea] = useState([]);
 
     const [deckRival, setDeckRival] = useState("")
+
+    const [shieldArea, setShieldArea] = useState([]);
     //Estado sala para jugar una partida
-    // const [room, setRoom] = useState([]);
+    const [roomId, setRoomId] = useState(""); // ID de la sala
+    const [players, setPlayers] = useState(new Set()); // Jugadores en la sala
+    const [turnPlayers, setTurnPlayer] = useState("");
+
     const [rival, setRival] = useState("")
     //Estados de la partida
     // const [gameStatus, setGameStatus] = useState('buscando'); // Estado del juego: buscando, esperando, empezar
@@ -48,15 +53,31 @@ const Prueba = () => {
         socket.on('salaCreada', (roomData) => {
             setIsLoading(true)
             setShowModal(true)
-            console.log(roomData)
+            console.log(roomData.id)
+            setRoomId(roomData.id)
+            localStorage.setItem("roomId", roomData.id);
         });
         socket.on('salaEncontrada', (roomData, startPlayer) => {
             console.log("te uniste a la sala", roomData.players)
+            setRoomId(roomData.id)
+            localStorage.setItem("roomId", roomData.id);
             setRival(roomData.players.find(player => player !== localStorage.getItem(user)))
+            const playersSet = new Set (roomData.players)
+            setPlayers(playersSet)
+            setTurnPlayer(startPlayer)
+            console.log("los jugadores son", players)
             empezarPartida(startPlayer)
             setDeckRival("40")
             setRivalHand("5")
         });
+
+        socket.on('mulliganFinalizado', () => {
+            setShowModal(false);
+        
+            setDeck(prevDeck => shieldAdd(setShieldArea, setDeck, prevDeck));
+
+        });
+
         // Limpia los listeners al desmontar el componente
         return () => {
 
@@ -64,7 +85,12 @@ const Prueba = () => {
     
     }, []);
         
+    useEffect(() => {
+        console.log(deck)
+        console.log(shieldArea); // Ahora se ejecutará después de que el estado se haya actualizado
+    }, [shieldArea]);
 
+    
     const buscarPartida = () =>{
         console.log("buscando partida")
         socket.emit('buscarSala', localStorage.getItem('user'));
@@ -75,7 +101,14 @@ const Prueba = () => {
 
     const hacerMulligan = () => {
         initializeDeck(setDeck, setHand, setDeckInitialized)
-        setShowModal(false)
+
+        socket.emit("decidirMulligan", {roomId: localStorage.getItem("roomId"), playerId: localStorage.getItem('user'), decision: true});
+        setModalConfig(
+            {
+                title: `Esperando a que el rival decida hacer mulligan`,
+            }
+        )
+        setIsLoading(true)
     }
 
     const modalBsucarPartida = () =>{
@@ -110,23 +143,34 @@ const Prueba = () => {
         setTimeout(() => {
             setModalConfig(
                 {
-                    title: `Quieres realizar un mulligan?`,
+                    title: `Quieres realizar mulligan?`,
                     actions: [
                         {label: 'Aceptar', onClick: hacerMulligan , style: 'bg-blue-500 text-white'},
-                        {label: 'Cancelar', onClick: handleCancel, style: 'bg-gray-500 text-white'},
+                        {label: 'Cancelar', onClick: handleCancellMulligan, style: 'bg-gray-500 text-white'},
                     ]
                 }
             )
             setIsLoading(false)
             setShowModal(true);
-        }, 5000);
+        }, 3000);
     }
 
     const closeModal = () => {
         setModalCarta(null); // Limpiamos la carta seleccionada
         setShowModalCarta(false); // Cerramos el modal
     };
+    
+    const handleCancellMulligan = () => {
 
+        socket.emit("decidirMulligan", {roomId: localStorage.getItem("roomId"), playerId: localStorage.getItem('user'), decision: false});
+
+        setModalConfig(
+            {
+                title: `Esperando a que el rival decida hacer mulligan`,
+            }
+        )
+        setIsLoading(true)
+    }
 
     const emitirBattleAreaActualizada = (battleCards) => {
         console.log("Emitiendo actualización de BattleArea...");
@@ -164,6 +208,7 @@ return (
                     setShowModalCarta={setShowModalCarta} 
                     setModalCarta={setModalCarta}
                     emitirBattleAreaActualizada={emitirBattleAreaActualizada}
+                    shieldArea={shieldArea}
                 />
             </div>
         </div>

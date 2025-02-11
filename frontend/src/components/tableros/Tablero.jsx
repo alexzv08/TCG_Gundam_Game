@@ -7,15 +7,15 @@ import GraveyardArea from "./zonasDeJuego/GraveyardZone"
 import Hand from "./zonasDeJuego/Hand"
 import PropTypes from "prop-types";
 
-
-
-const Tablero = ({ deck, 
+const Tablero = ({ 
+    deck, 
     deckRival, 
     hand, 
     setHand, 
     setShowModalCarta = false, 
     setModalCarta = false,
-    emitirBattleAreaActualizada
+    emitirBattleAreaActualizada,
+    shieldArea
 }) => {
 
     const [draggedCard, setDraggedCard] = useState(null); // Estado para almacenar la carta arrastrada
@@ -43,7 +43,7 @@ const Tablero = ({ deck,
 
     return (
         <div className="grid w-full h-full grid-cols-12">
-            <ShieldArea />
+            <ShieldArea shieldArea={shieldArea}/>
             <BattleArea 
                 battleCards={battleCards} 
                 onDrop={handleDrop}
@@ -75,7 +75,8 @@ const Tablero = ({ deck,
         setBattleArea: PropTypes.func,
         setShowModalCarta: PropTypes.bool,
         setModalCarta: PropTypes.array,
-        emitirBattleAreaActualizada: PropTypes.func
+        emitirBattleAreaActualizada: PropTypes.func,
+        shieldArea: PropTypes.array
 
     };
     export default Tablero;

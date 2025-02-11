@@ -9,7 +9,7 @@ const db = require('../db/db');
 
 const cartasRouter = require('../api/cartas');
 const authRoutes = require('../api/middlewareUser');
-const { initializeGame, handlePlayerAction, getGameState } = require("../logicaGame/game/gameLogic");
+// const { initializeGame, handlePlayerAction, getGameState } = require("../logicaGame/game/gameLogic");
 const { createRoom, joinRoom } = require('../logicaGame/waitingRooms/waitingRooms');
 
 const partidas = {};
@@ -53,6 +53,7 @@ function randomStartPlayer(players) {
 // Variables para las partidas
 let rooms = []; // Las salas activas
 let playerRooms = {}; // Mapea socket.id -> room.id
+let playersReady = {}; // Mapea room.id -> { socket.id -> decision }
 // Eventos de Socket.IO
 
 io.on('connection', (socket) => {
@@ -82,6 +83,20 @@ io.on('connection', (socket) => {
         }
         console.log(socket.rooms)
     })
+
+    socket.on("decidirMulligan", ({ roomId, playerId, decision }) => {
+        if (!playersReady[roomId]) {
+            playersReady[roomId] = {};
+        }
+
+        playersReady[roomId][playerId] = decision;
+
+        // Si ambos jugadores han decidido, avanzar
+        if (Object.keys(playersReady[roomId]).length === 2) {
+            io.to(roomId).emit("mulliganFinalizado", playersReady[roomId]);
+            delete playersReady[roomId]; // Limpiar estado para la siguiente fase
+        }
+    });
 
     socket.on('battleAreaUpdated', (battleArea) => {
         console.log("battleAreaUpdated", battleArea)
