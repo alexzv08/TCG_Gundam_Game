@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 
 const CartaModal = ({ show, close, carta }) => {
-    console.log(show)
     if (!show) return null;
     
     return (

@@ -63,13 +63,29 @@ import PropTypes from "prop-types";
                 mazoSeguro.map((item) => (
                     <div
                         key={`${item.carta.id_coleccion}-${item.carta.id_carta}`}
-                        className="flex justify-between p-2 m-2 text-white bg-blue-500 rounded-lg"
+                        className="flex justify-between p-0 m-0 text-white rounded-lg"
                     >
-                        <div className="flex gap-2">
-                            <h3>{item.carta.card_name}</h3>
-                            <h3>{": x" + item.cantidad}</h3>
+                        <div className="flex items-center w-full gap-2 hover:opacity-55">
+                            <div className={`bg-${item.carta.color}-500 h-10 w-10 text-[10px]`}>
+                                <p>{"Level "+item.carta.level}  </p>
+                                <p>{"Cost "+item.carta.cost}    </p>
+                            </div> {/* Color de la Carta */}
+                            <div className="w-1/2">
+                                <h3>{item.carta.card_name}</h3> {/* Nombre de la Carta */}
+                                <h4 className="text-sm text-gray-500">{item.carta.id_coleccion + "-" + item.carta.id_carta}</h4> {/* ID de la Carta */}
+                            </div>
+                            <div className="h-10 bg-white-500 w-14">
+                                <div
+                                className={`h-full w-full bg-no-repeat bg-[length:175%] bg-[position:40%_15%]`}    
+                                style={{
+                                    backgroundImage: `url('/imgCards/${item.carta.id_coleccion}-${item.carta.id_carta}.webp')`,
+                                }}
+                                >
+                                </div>
+                            </div> {/* Placeholder img de la carta */}
+                            <h3 className="px-2">{item.cantidad}</h3>
                         </div>
-                        <button
+                        {/* <button
                             onClick={() => {
                                 onRemoveFromDeck({
                                     id_coleccion: item.carta.id_coleccion,
@@ -78,7 +94,7 @@ import PropTypes from "prop-types";
                             }}
                         >
                             Eliminar
-                        </button>
+                        </button> */}
                     </div>
                 ))
             ) : (

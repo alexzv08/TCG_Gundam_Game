@@ -9,7 +9,7 @@ const db = require('../db/db');
 
 const cartasRouter = require('../api/cartas');
 const authRoutes = require('../api/middlewareUser');
-// const { initializeGame, handlePlayerAction, getGameState } = require("../logicaGame/game/gameLogic");
+const { createGame, añadirJugador } = require("../logicaGame/game/gameLogic");
 const { createRoom, joinRoom } = require('../logicaGame/waitingRooms/waitingRooms');
 
 const partidas = {};
@@ -60,26 +60,24 @@ io.on('connection', (socket) => {
     console.log('Player connected:', socket.id);
 
     socket.on("buscarSala", (user) => {
-        console.log(user, "esta buscndo partida")
+        console.log(socket.id, "esta buscando partida")
         let roomFound = rooms.find(room => room.players.length < 2);
-
+        console.log("roomFound", roomFound)
         if (roomFound) {
             // Sala encontrada
             roomFound.players.push(user);
-            playerRooms[user] = roomFound.id;
             socket.join(roomFound.id);
-
-            console.log(`Jugador ${user} se unió a la sala ${roomFound.players}`);
+            añadirJugador(socket, user, roomFound.id);
             io.to(roomFound.id).emit('salaEncontrada', roomFound, randomStartPlayer(roomFound.players));
+            console.log(`Jugador ${user} se unió a la sala ${roomFound.players}`);
         } else {
             // Crear una nueva sala
             const newRoom = { id: `room-${Date.now()}`, players: [user] };
-            rooms.push(newRoom);
-            playerRooms[user] = newRoom.id;
+            createGame(socket, user, newRoom.id);
             socket.join(newRoom.id);
-
             console.log(`Jugador ${user} creó la sala ${newRoom.id}`);
             socket.emit('salaCreada', newRoom);
+            rooms.push(newRoom);
         }
         console.log(socket.rooms)
     })
