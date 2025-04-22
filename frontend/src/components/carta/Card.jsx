@@ -1,10 +1,11 @@
 // import React from 'react';
 import PropTypes from 'prop-types';
 
-const Card = ({ carta, onAddToDeck, onRestToDeck }) => {
+const Card = ({ carta, onAddToDeck, onRestToDeck, onOpenModalCarta }) => {
     return (
         <div className="relative transition shadow-lg hover:shadow-xl">
-            <img src={`/imgCards/${carta.id_coleccion}-${carta.id_carta}.webp`} alt={carta.card_name} />
+            <img src={`/imgCards/${carta.id_coleccion}-${carta.id_carta}.webp`} alt={carta.card_name} 
+            onClick={() => onOpenModalCarta(carta)}/>
             <div className='absolute z-10 flex flex-col justify-between gap-5 top-5 right-3'>
                 <button
                     onClick={() => onAddToDeck(carta)}
@@ -33,7 +34,8 @@ Card.propTypes = {
         id_carta: PropTypes.string.isRequired,
     }).isRequired,
     onAddToDeck: PropTypes.func,
-    onRestToDeck: PropTypes.func
+    onRestToDeck: PropTypes.func,
+    onOpenModalCarta: PropTypes.func,
 
 };
 

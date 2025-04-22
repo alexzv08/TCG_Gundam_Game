@@ -5,21 +5,30 @@ import DeckArea from "./zonasDeJuego/DeckArea";
 import BattleArea from "./zonasDeJuego/BattleArea";
 import GraveyardArea from "./zonasDeJuego/GraveyardZone"
 import Hand from "./zonasDeJuego/Hand"
+import AccionesJuego from "./zonasDeJuego/AccionesJuego";
+import PilotAssignModal from "../modalPilot/PilotAssingModal";
 import PropTypes from "prop-types";
 
 const Tablero = ({ 
-    deck, 
+    deck,
+    setDeck, 
     deckRival, 
     hand, 
     setHand, 
     setShowModalCarta = false, 
     setModalCarta = false,
     emitirBattleAreaActualizada,
-    shieldArea
+    shieldArea,
+    setShieldArea,
+    baseArea,
+    myResources,
+    setMyResources,
 }) => {
 
     const [draggedCard, setDraggedCard] = useState(null); // Estado para almacenar la carta arrastrada
-    const [battleCards, setBattleCards] = useState([]); // Estado inicial como array vacío
+    const [battleCards, setBattleCards] = useState([]); // Estado inicial como array vacío --> estructura datos // { unit: cartaUnit1, pilots: [] }
+    const [selectedPilot, setSelectedPilot]    = useState(null);
+
 
     const handleDragStart = (e,carta) => {
         console.log("Carta arrastrada:", carta);
@@ -28,31 +37,69 @@ const Tablero = ({
     };
 
     const handleDrop = (card) => {
-        console.log("Carta soltada:", card);
-        if (card) {
-            setBattleCards((prevCards) => {
-                const updatedCards = [...prevCards, draggedCard]; // Agregar la carta nueva
-                // Emitir la actualización después de actualizar el estado
-                emitirBattleAreaActualizada(updatedCards);
-                return updatedCards; // Devolver el nuevo estado
-            });
-            setHand((prevHand) => prevHand.filter((carta) => carta !== draggedCard));
+        // Si es unit, lo insertas como antes pero con estructura nueva:
+        if (card.card_type === "unit") {
+            setBattleCards(prev => {
+            const updated = [...prev, { unit: card, pilots: [] }];
+            emitirBattleAreaActualizada(updated);
+            return updated;
+        });
+        setHand(h => h.filter(c => c !== card));
+        }
+        // Si es piloto:
+        else if (card.card_type === "pilot") {
+            if (battleCards.length === 0) {
+            alert("No hay unidades en juego para asignar un piloto.");
+            return;
+        }
+          // Guardas piloto y abres modal para elegir índice de unidad
+        setSelectedPilot(card);
+        setShowPilotModal(true);
+        }
+        // Si es command:
+        else if (card.card_type === "command") {
+          // aquí tu lógica específica de commands
         }
     };
+
+    const assignPilotToUnit = (unitIndex) => {
+        setBattleCards(prev => {
+            const updated = [...prev];
+            updated[unitIndex].pilots.push(selectedPilot);
+            return updated;
+        });
+        setHand(h => h.filter(c => c !== selectedPilot));
+        setSelectedPilot(null);
+        setShowPilotModal(false);
+        emitirBattleAreaActualizada(battleCards);
+    };
+
+
 
 
     return (
         <div className="grid w-full h-full grid-cols-12">
-            <ShieldArea shieldArea={shieldArea}/>
+            <ShieldArea shieldArea={shieldArea} baseArea={baseArea}/>
             <BattleArea 
                 battleCards={battleCards} 
                 onDrop={handleDrop}
                 hand={hand} // Pasa la mano actual
                 setHand={setHand} // Pasa la función para actualizar la mano
                 emitirBattleAreaActualizada={emitirBattleAreaActualizada}
+                myResources={myResources}
+                setMyResources={setMyResources}
             />
             <DeckArea deck= {deck} deckRival= {deckRival} />
-            <GraveyardArea />
+            <AccionesJuego 
+                deck= {deck} 
+                setDeck = {setDeck}
+                hand= {hand} 
+                setHand= {setHand}
+                shieldArea = {shieldArea}
+                setShieldArea= {setShieldArea}
+                myResources= {myResources}
+                setMyResources= {setMyResources}
+            />
             <GraveyardArea />
             <Hand  
                 hand= {hand}
@@ -67,6 +114,7 @@ const Tablero = ({
 
     Tablero.propTypes = {
         deck: PropTypes.array,
+        setDeck: PropTypes.func,
         hand: PropTypes.array,
         rivalHand: PropTypes.string,
         deckRival: PropTypes.string,
@@ -76,7 +124,11 @@ const Tablero = ({
         setShowModalCarta: PropTypes.bool,
         setModalCarta: PropTypes.array,
         emitirBattleAreaActualizada: PropTypes.func,
-        shieldArea: PropTypes.array
+        shieldArea: PropTypes.array,
+        setShieldArea: PropTypes.func,
+        baseArea: PropTypes.array,
+        myResources: PropTypes.array,
+        setMyResources: PropTypes.func,
 
     };
     export default Tablero;

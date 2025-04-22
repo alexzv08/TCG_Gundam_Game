@@ -4,8 +4,8 @@ import { io } from "socket.io-client";
 import Game from "../../utils/game.js"
 import ConfirmModal from '../modal/Modal.jsx';
 import CartaModal from '../modalCarta/CartaModal.jsx';
-import  { initializeDeck, shieldAdd, baseTokenAdd, resourceAdd }  from "../../utils/funcionesGame.js"; 
-const SOCKET_URL  = "http://localhost:5000";
+import  { initializeDeck, shieldAdd, baseTokenAdd }  from "../../utils/funcionesGame.js"; 
+const SOCKET_URL  = "http://192.168.1.136:5000";
 
 const TableroDeJuego = () => {  
     

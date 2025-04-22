@@ -4,7 +4,7 @@ import icon from '../../assets/react.svg';
 
 const Sidebar = () => {
 
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const Menus =   
     [
         {

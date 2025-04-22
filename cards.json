@@ -1,0 +1,2222 @@
+{
+    "cards": [
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "004",
+            "name": "Guncannon",
+            "type": "Unit",
+            "rarity": "R",
+            "color": "blue",
+            "cost": 2,
+            "level": 3,
+            "ap": 2,
+            "hp": 3,
+            "trait": [
+                "Earth Federation",
+                "White Base Team"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "trait",
+                "value": "White Base Team"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "Repair 1",
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "constant",
+                    "timing": "onEndPhase",
+                    "action": "recoverHP",
+                    "params": {
+                        "amount": 1
+                    }
+                },
+                {
+                    "type": "triggered",
+                    "timing": "onPairing",
+                    "action": "restTarget",
+                    "params": {
+                        "target": "enemyUnit",
+                        "condition": "target.hp <= 2"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "005",
+            "name": "Unicorn Gundam (Unicorn Mode)",
+            "type": "Unit",
+            "rarity": "R",
+            "color": "blue",
+            "cost": 4,
+            "level": 5,
+            "ap": 4,
+            "hp": 3,
+            "trait": [
+                "Civilian"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Banagher Links"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onDestroyed",
+                    "condition": "card.isLinkUnit === true",
+                    "action": "returnPairedPilotAndDiscard",
+                    "params": {}
+                }
+            ],
+            "source": "Mobile Suit Gundam Unicorn"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "008",
+            "name": "Guntank",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "blue",
+            "cost": 1,
+            "level": 2,
+            "ap": 1,
+            "hp": 2,
+            "trait": [
+                "Earth Federation",
+                "White Base Team"
+            ],
+            "link": false,
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onDeploy",
+                    "action": "dealDamage",
+                    "params": {
+                        "target": "enemyUnit",
+                        "condition": "target.rested === true",
+                        "amount": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "009",
+            "name": "G-Fighter",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "blue",
+            "cost": 2,
+            "level": 3,
+            "ap": 3,
+            "hp": 2,
+            "trait": [
+                "Earth Federation",
+                "White Base Team"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "trait",
+                "value": "White Base Team"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onDeploy",
+                    "action": "gainKeywordTemporary",
+                    "params": {
+                        "target": "friendlyUnit",
+                        "condition": "target.trait.includes('White Base Team')",
+                        "keyword": "High-Maneuver",
+                        "duration": "endOfTurn"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "011",
+            "name": "Loto",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "blue",
+            "cost": 2,
+            "level": 2,
+            "ap": 2,
+            "hp": 2,
+            "trait": [
+                "Earth Federation"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "trait",
+                "value": "Earth Federation"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [],
+            "source": "Mobile Suit Gundam Unicorn"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "013",
+            "name": "Gundam",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 2,
+            "level": 4,
+            "ap": 3,
+            "hp": 4,
+            "trait": [
+                "Earth Federation",
+                "White Base Team"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Amuro Ray"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "015",
+            "name": "Ball",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 1,
+            "level": 1,
+            "ap": 1,
+            "hp": 1,
+            "trait": [
+                "Earth Federation"
+            ],
+            "link": false,
+            "zone": [
+                "Space"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onAttack",
+                    "condition": "",
+                    "action": "recoverHP",
+                    "params": {
+                        "target": "selectedUnit",
+                        "amount": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "016",
+            "name": "Jegan",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 2,
+            "level": 3,
+            "ap": 2,
+            "hp": 3,
+            "trait": [
+                "Earth Federation"
+            ],
+            "link": false,
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "passive",
+                    "timing": "onHandCheck",
+                    "condition": "card.inHand && player.hasUnitsInPlay('Earth Federation') >= 2",
+                    "action": "modifyCost",
+                    "params": {
+                        "amount": -1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Unicorn"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "018",
+            "name": "ReZEL",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 2,
+            "level": 3,
+            "ap": 4,
+            "hp": 3,
+            "trait": [
+                "Earth Federation"
+            ],
+            "link": false,
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [],
+            "source": "Mobile Suit Gundam Unicorn"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "026",
+            "name": "Char's Zaku Ⅱ",
+            "type": "Unit",
+            "rarity": "R",
+            "color": "green",
+            "cost": 2,
+            "level": 3,
+            "ap": 3,
+            "hp": 2,
+            "trait": [
+                "Zeon"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Char Aznable"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onPairing",
+                    "condition": "card.isLinkUnit === true",
+                    "action": "deployUnitToken",
+                    "params": {
+                        "unit_name": "Char's Zaku Ⅱ",
+                        "trait": "Zeon",
+                        "ap": 3,
+                        "hp": 1
+                    }
+                },
+                {
+                    "type": "triggered",
+                    "timing": "onDestroyed",
+                    "condition": "card.isLinkUnit === true",
+                    "action": "deployUnitToken",
+                    "params": {
+                        "unit_name": "Char's Zaku Ⅱ",
+                        "trait": "Zeon",
+                        "ap": 3,
+                        "hp": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "028",
+            "name": "Gundam Sandrock",
+            "type": "Unit",
+            "rarity": "R",
+            "color": "green",
+            "cost": 3,
+            "level": 5,
+            "ap": 4,
+            "hp": 4,
+            "trait": [
+                "Operation Meteor"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Quatre Raberba Winner"
+            },
+            "zone": [
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onDeploy",
+                    "condition": "",
+                    "action": "deployUnitFromHand",
+                    "params": {
+                        "unit_trait": "Maganac Corps"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Wing"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "030",
+            "name": "Rick Dom",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "green",
+            "cost": 2,
+            "level": 3,
+            "ap": 3,
+            "hp": 3,
+            "trait": [
+                "Zeon"
+            ],
+            "link": false,
+            "zone": [
+                "Space"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onAttack",
+                    "condition": "card.attackDestroysEnemyUnit === true",
+                    "action": "breachEffect",
+                    "params": {
+                        "amount": 2
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "031",
+            "name": "Gelgoog",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "green",
+            "cost": 2,
+            "level": 4,
+            "ap": 4,
+            "hp": 3,
+            "trait": [
+                "Zeon"
+            ],
+            "link": false,
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "034",
+            "name": "Gundam Heavyarms",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "green",
+            "cost": 2,
+            "level": 4,
+            "ap": 3,
+            "hp": 4,
+            "trait": [
+                "Operation Meteor"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Trowa Barton"
+            },
+            "zone": [
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onPairing",
+                    "condition": "true",
+                    "action": "gainKeyword",
+                    "params": {
+                        "keyword": "Breach 3"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Wing"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "040",
+            "name": "Wing Gundam",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "green",
+            "cost": 2,
+            "level": 5,
+            "ap": 4,
+            "hp": 3,
+            "trait": [
+                "Operation Meteor"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Heero Yuy"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [],
+            "source": "Mobile Suit Gundam Wing"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "041",
+            "name": "Shenlong Gundam",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "green",
+            "cost": 3,
+            "level": 4,
+            "ap": 4,
+            "hp": 3,
+            "trait": [
+                "Operation Meteor"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Chang Wufei"
+            },
+            "zone": [
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onAttack",
+                    "condition": "card.isDestroyed === true",
+                    "action": "dealDamageToShield",
+                    "params": {
+                        "amount": 3
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Wing"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "068",
+            "name": "Perfect Strike Gundam",
+            "type": "Unit",
+            "rarity": "R",
+            "color": "white",
+            "cost": 3,
+            "level": 5,
+            "ap": 4,
+            "hp": 4,
+            "trait": [
+                "Triple Ship Alliance"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "trait",
+                "value": "Earth Alliance"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "passive",
+                    "timing": "onDeploy",
+                    "condition": "true",
+                    "action": "returnCardToHand",
+                    "params": {
+                        "target": "enemyUnitWith1HP"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam SEED"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "070",
+            "name": "Gundam Aerial",
+            "type": "Unit",
+            "rarity": "R",
+            "color": "white",
+            "cost": 3,
+            "level": 5,
+            "ap": 3,
+            "hp": 3,
+            "trait": [
+                "Academy"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Suletta Mercury"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "passive",
+                    "timing": "onHandCost",
+                    "condition": "trash.hasCommandCards >= 4",
+                    "action": "modifyCost",
+                    "params": {
+                        "target": "thisCard",
+                        "amount": -2
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam the Witch from Mercury"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "072",
+            "name": "Launcher Strike Gundam",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "white",
+            "cost": 3,
+            "level": 4,
+            "ap": 3,
+            "hp": 4,
+            "trait": [
+                "Earth Alliance"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "trait",
+                "value": "Earth Alliance"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [],
+            "source": "Mobile Suit Gundam SEED"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "075",
+            "name": "Darilbalde",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "white",
+            "cost": 2,
+            "level": 3,
+            "ap": 4,
+            "hp": 2,
+            "trait": [
+                "Academy"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "trait",
+                "value": "Academy"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "triggered",
+                    "timing": "onDeploy",
+                    "condition": "",
+                    "action": "returnEnemyUnitToHand",
+                    "params": {
+                        "target_hp": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam the Witch from Mercury"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "076",
+            "name": "Michaelis",
+            "type": "Unit",
+            "rarity": "U",
+            "color": "white",
+            "cost": 2,
+            "level": 3,
+            "ap": 3,
+            "hp": 3,
+            "trait": [
+                "Academy"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "trait",
+                "value": "Academy"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "passive",
+                    "timing": "continuous",
+                    "condition": "trash.commandCards >= 4",
+                    "action": "modifyStat",
+                    "params": {
+                        "target": "this",
+                        "stat": "ap",
+                        "amount": 1
+                    }
+                },
+                {
+                    "type": "passive",
+                    "timing": "continuous",
+                    "condition": "trash.commandCards >= 4",
+                    "action": "modifyStat",
+                    "params": {
+                        "target": "this",
+                        "stat": "hp",
+                        "amount": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam the Witch from Mercury"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "077",
+            "name": "Strike Gundam",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "white",
+            "cost": 2,
+            "level": 4,
+            "ap": 3,
+            "hp": 4,
+            "trait": [
+                "Earth Alliance"
+            ],
+            "link": true,
+            "link_requirement": {
+                "type": "name",
+                "value": "Kira Yamato"
+            },
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [],
+            "source": "Mobile Suit Gundam SEED"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "081",
+            "name": "M1 Astray",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "white",
+            "cost": 2,
+            "level": 2,
+            "ap": 2,
+            "hp": 2,
+            "trait": [
+                "Triple Ship Alliance"
+            ],
+            "link": false,
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "passive",
+                    "condition": "card.trait.includes('Triple Ship Alliance') && card.isInPlay",
+                    "action": "modifyStat",
+                    "params": {
+                        "target": "this",
+                        "stat": "ap",
+                        "amount": 1
+                    }
+                },
+                {
+                    "type": "passive",
+                    "condition": "card.trait.includes('Triple Ship Alliance') && card.isInPlay",
+                    "action": "gainKeyword",
+                    "params": {
+                        "card": "this",
+                        "keyword": "Blocker"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam SEED"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "088",
+            "name": "Banagher Links",
+            "type": "Pilot",
+            "rarity": "U",
+            "color": "blue",
+            "cost": 1,
+            "level": 5,
+            "ap": 2,
+            "hp": 2,
+            "trait": [
+                "Civilian",
+                "Newtype"
+            ],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "addToHand",
+                    "params": {
+                        "card": "this"
+                    }
+                },
+                {
+                    "type": "paired",
+                    "condition": "card.isLinkUnit",
+                    "action": "draw",
+                    "params": {
+                        "amount": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Unicorn"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "089",
+            "name": "Riddhe Marcenas",
+            "type": "Pilot",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 1,
+            "level": 3,
+            "ap": 1,
+            "hp": 1,
+            "trait": [
+                "Earth Federation"
+            ],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "addToHand",
+                    "params": {
+                        "card": "this"
+                    }
+                },
+                {
+                    "type": "condition",
+                    "condition": "unit.hasRepair",
+                    "action": "increaseAP",
+                    "params": {
+                        "amount": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Unicorn"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "091",
+            "name": "Chang Wufei",
+            "type": "Pilot",
+            "rarity": "U",
+            "color": "green",
+            "cost": 1,
+            "level": 4,
+            "ap": 2,
+            "hp": 1,
+            "trait": [
+                "Operation Meteor"
+            ],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "addToHand",
+                    "params": {
+                        "card": "this"
+                    }
+                },
+                {
+                    "type": "condition",
+                    "condition": "unit.hasBreach && turn.isYourTurn",
+                    "action": "ignoreBattleDamage",
+                    "params": {
+                        "fromUnitsWithAPLessThan": 3
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Wing"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "097",
+            "name": "Guel Jeturk",
+            "type": "Pilot",
+            "rarity": "U",
+            "color": "white",
+            "cost": 1,
+            "level": 3,
+            "ap": 1,
+            "hp": 1,
+            "trait": [
+                "Academy"
+            ],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "addToHand",
+                    "params": {
+                        "card": "this"
+                    }
+                },
+                {
+                    "type": "activateMain",
+                    "condition": "opponent.handSize >= 8",
+                    "action": "setActive",
+                    "params": {
+                        "unit": "this",
+                        "cantAttackThisTurn": true
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam the Witch from Mercury"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "099",
+            "name": "Intercept Orders",
+            "type": "Command",
+            "rarity": "R",
+            "color": "blue",
+            "cost": 2,
+            "level": 4,
+            "ap": null,
+            "hp": null,
+            "trait": [],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "chooseEnemyUnit",
+                    "params": {
+                        "condition": "HP <= 5",
+                        "action": "rest"
+                    }
+                },
+                {
+                    "type": "main",
+                    "action": "chooseEnemyUnits",
+                    "params": {
+                        "condition": "HP <= 3",
+                        "quantity": "1-2",
+                        "action": "rest"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "100",
+            "name": "A Show of Resolve",
+            "type": "Command",
+            "rarity": "U",
+            "color": "blue",
+            "cost": 3,
+            "level": 4,
+            "ap": null,
+            "hp": null,
+            "trait": [],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "main",
+                    "action": "draw",
+                    "params": {
+                        "quantity": 2
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Unicorn"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "105",
+            "name": "Citizens, Take a Stand!",
+            "type": "Command",
+            "rarity": "R",
+            "color": "green",
+            "cost": 1,
+            "level": 4,
+            "ap": null,
+            "hp": null,
+            "trait": [],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "add_to_hand",
+                    "params": null
+                },
+                {
+                    "type": "main",
+                    "action": "ap_boost",
+                    "params": {
+                        "amount": 2,
+                        "target": "all_units"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "107",
+            "name": "First Contact",
+            "type": "Command",
+            "rarity": "U",
+            "color": "green",
+            "cost": 3,
+            "level": 3,
+            "ap": null,
+            "hp": null,
+            "trait": [],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "place_ex_resource",
+                    "params": null
+                },
+                {
+                    "type": "main",
+                    "action": "place_resource",
+                    "params": {
+                        "rested": true
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam Wing"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "117",
+            "name": "The Witch and the Bride",
+            "type": "Command",
+            "rarity": "R",
+            "color": "white",
+            "cost": 2,
+            "level": 5,
+            "ap": null,
+            "hp": null,
+            "trait": [],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "activate_main",
+                    "params": null
+                },
+                {
+                    "type": "main",
+                    "action": "return_to_hand",
+                    "params": {
+                        "target": "enemy_unit",
+                        "condition": "5_or_less_hp"
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam the Witch from Mercury"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "118",
+            "name": "Overflowing Affection",
+            "type": "Command",
+            "rarity": "U",
+            "color": "white",
+            "cost": 1,
+            "level": 2,
+            "ap": null,
+            "hp": null,
+            "trait": [],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "main",
+                    "action": "draw_discard",
+                    "params": {
+                        "draw": 2,
+                        "discard": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam SEED"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "120",
+            "name": "Naval Bombardment",
+            "type": "Command",
+            "rarity": "C",
+            "color": "white",
+            "cost": 1,
+            "level": 2,
+            "ap": null,
+            "hp": null,
+            "trait": [],
+            "link": false,
+            "zone": [],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "enemy_debuff",
+                    "params": {
+                        "target": "enemy Unit",
+                        "ap_modifier": -3
+                    }
+                },
+                {
+                    "type": "action",
+                    "action": "friendly_buff",
+                    "params": {
+                        "target": "friendly Unit with Blocker",
+                        "ap_modifier": 3
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam SEED"
+        },
+        {
+            "id_coleccion": "GD01",
+            "id_carta": "124",
+            "name": "Side 7",
+            "type": "Base",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 1,
+            "level": 1,
+            "ap": 0,
+            "hp": 4,
+            "trait": [
+                "Earth Federation",
+                "Stronghold"
+            ],
+            "link": false,
+            "zone": [
+                "Space"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "deploy",
+                    "params": {}
+                },
+                {
+                    "type": "deploy",
+                    "action": "shield_add",
+                    "params": {
+                        "target": "your Shield"
+                    }
+                },
+                {
+                    "type": "activate_main",
+                    "action": "hp_recovery",
+                    "params": {
+                        "target": "friendly Unit",
+                        "hp_modifier": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "001",
+            "name": "Gundam",
+            "type": "Unit",
+            "rarity": "LR",
+            "color": "blue",
+            "cost": 3,
+            "level": 4,
+            "ap": 3,
+            "hp": 4,
+            "trait": [
+                "Earth Federation",
+                "White Base Team"
+            ],
+            "link": true,
+            "link_requirement": "[Amuro Ray]",
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "repair",
+                    "action": "recover_hp",
+                    "params": {
+                        "hp_amount": 2
+                    }
+                },
+                {
+                    "type": "during_pair",
+                    "action": "ap_boost",
+                    "params": {
+                        "target": "all Units",
+                        "ap_modifier": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "002",
+            "name": "Gundam (MA Form)",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 3,
+            "level": 5,
+            "ap": 4,
+            "hp": 3,
+            "trait": [
+                "Earth Federation",
+                "White Base Team"
+            ],
+            "link": true,
+            "link_requirement": "[Amuro Ray]",
+            "zone": [
+                "Space"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "effects": [
+                {
+                    "type": "when_paired",
+                    "condition": "(White Base Team) Pilot",
+                    "action": "draw_card",
+                    "params": {
+                        "draw_amount": 1
+                    }
+                }
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "005",
+            "name": "GM",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 1,
+            "level": 2,
+            "ap": 2,
+            "hp": 2,
+            "trait": [
+                "Earth Federation"
+            ],
+            "link": false,
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "source": "Mobile Suit Gundam"
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "007",
+            "name": "Gundam Aerial (Bit on Form)",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "white",
+            "cost": 2,
+            "level": 4,
+            "ap": 3,
+            "hp": 4,
+            "trait": [
+                "Academy"
+            ],
+            "link": [
+                "Suletta Mercury"
+            ],
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "BlockIcon"
+            ],
+            "source": "Mobile Suit Gundam the Witch from Mercury"
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "008",
+            "name": "Demi Trainer",
+            "type": "Unit",
+            "rarity": "C",
+            "color": "white",
+            "cost": 1,
+            "level": 1,
+            "ap": 1,
+            "hp": 1,
+            "trait": [
+                "Academy"
+            ],
+            "link": [],
+            "zone": [
+                "Space",
+                "Earth"
+            ],
+            "keywords": [
+                "Blocker"
+            ],
+            "source": "Mobile Suit Gundam the Witch from Mercury",
+            "text": "<Blocker> (Rest this Unit to change the attack target to it.)"
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "010",
+            "name": "Amuro Ray",
+            "type": "Pilot",
+            "rarity": "C",
+            "color": "blue",
+            "cost": 1,
+            "level": 4,
+            "ap": 2,
+            "hp": 1,
+            "trait": [
+                "Earth Federation",
+                "White Base Team",
+                "Newtype"
+            ],
+            "link": [],
+            "zone": [],
+            "keywords": [],
+            "source": "Mobile Suit Gundam",
+            "text": "【Burst】Add this card to your hand.\n【When Paired】Choose 1 enemy Unit with 5 or less HP. Rest it."
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "011",
+            "name": "Suletta Mercury",
+            "type": "Pilot",
+            "rarity": "C",
+            "color": "white",
+            "cost": 1,
+            "level": 4,
+            "ap": 1,
+            "hp": 2,
+            "trait": [
+                "Academy"
+            ],
+            "link": [],
+            "zone": [],
+            "keywords": [],
+            "source": "Mobile Suit Gundam the Witch from Mercury",
+            "text": "【Burst】Add this card to your hand.\n【Attack】【Once per Turn】Choose 1 of your Resources. Set it as active."
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "012",
+            "card_type": "COMMAND",
+            "rarity": "C",
+            "color": "BLUE",
+            "level": 2,
+            "cost": 1,
+            "trait": "Earth Federation/White Base Team",
+            "link_requirement": "",
+            "zone": "",
+            "ap": 0,
+            "hp": 1,
+            "ap_boost": 0,
+            "hp_boost": 1,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam",
+            "effects": [
+                {
+                    "type": "main",
+                    "action": "chooseEnemyUnit",
+                    "params": {
+                        "condition": "rested",
+                        "action": "dealDamage",
+                        "value": 1
+                    }
+                },
+                {
+                    "type": "pilot",
+                    "action": "triggeredByPilot",
+                    "params": {
+                        "pilot": "Hayato Kobayashi"
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "013",
+            "card_type": "COMMAND",
+            "rarity": "C",
+            "color": "BLUE",
+            "level": 3,
+            "cost": 1,
+            "trait": "Earth Federation/White Base Team",
+            "link_requirement": "",
+            "zone": "",
+            "ap": 1,
+            "hp": 0,
+            "ap_boost": 1,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam",
+            "effects": [
+                {
+                    "type": "main",
+                    "action": "chooseFriendlyUnit",
+                    "params": {
+                        "action": "recoverHP",
+                        "value": 3
+                    }
+                },
+                {
+                    "type": "pilot",
+                    "action": "triggeredByPilot",
+                    "params": {
+                        "pilot": "Kai Shiden"
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "015",
+            "card_type": "BASE",
+            "rarity": "C",
+            "color": "BLUE",
+            "level": 3,
+            "cost": 2,
+            "trait": "Earth Federation/White Base Team/Battleship",
+            "link_requirement": "",
+            "zone": "Space/Earth",
+            "ap": 0,
+            "hp": 5,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam",
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "deployCard",
+                    "params": {
+                        "card": "White Base"
+                    }
+                },
+                {
+                    "type": "deploy",
+                    "action": "addShieldToHand",
+                    "params": {}
+                },
+                {
+                    "type": "main",
+                    "action": "activateMain",
+                    "params": {
+                        "oncePerTurn": true,
+                        "cost": 2,
+                        "effect": {
+                            "condition": {
+                                "unitsInPlay": 0
+                            },
+                            "action": "deployUnitToken",
+                            "params": {
+                                "unit": {
+                                    "name": "Gundam",
+                                    "trait": "White Base Team",
+                                    "ap": 3,
+                                    "hp": 3
+                                }
+                            }
+                        },
+                        "alternativeEffects": [
+                            {
+                                "condition": {
+                                    "unitsInPlay": 1
+                                },
+                                "action": "deployUnitToken",
+                                "params": {
+                                    "unit": {
+                                        "name": "Guncannon",
+                                        "trait": "White Base Team",
+                                        "ap": 2,
+                                        "hp": 2
+                                    }
+                                }
+                            },
+                            {
+                                "condition": {
+                                    "unitsInPlay": 2
+                                },
+                                "action": "deployUnitToken",
+                                "params": {
+                                    "unit": {
+                                        "name": "Guntank",
+                                        "trait": "White Base Team",
+                                        "ap": 1,
+                                        "hp": 1
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST01",
+            "id_carta": "016",
+            "card_type": "BASE",
+            "rarity": "C",
+            "color": "WHITE",
+            "level": 2,
+            "cost": 1,
+            "trait": "Academy/Stronghold",
+            "link_requirement": "",
+            "zone": "Space",
+            "ap": 0,
+            "hp": 5,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam the Witch from Mercury",
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "deployCard",
+                    "params": {
+                        "card": "Asticassia School of Technology, Earth House"
+                    }
+                },
+                {
+                    "type": "deploy",
+                    "action": "addShieldToHand",
+                    "params": {}
+                },
+                {
+                    "type": "main",
+                    "action": "activateMain",
+                    "params": {
+                        "effect": {
+                            "condition": "restBase",
+                            "action": "increaseAP",
+                            "target": "friendlyLinkUnits",
+                            "params": {
+                                "ap": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST02",
+            "id_carta": "001",
+            "name": "Wing Gundam",
+            "card_type": "UNIT",
+            "rarity": "LR",
+            "color": "GREEN",
+            "level": 6,
+            "cost": 4,
+            "trait": "Operation Meteor",
+            "link_requirement": "[Heero Yuy]",
+            "zone": "Space/Earth",
+            "ap": 4,
+            "hp": 5,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam Wing",
+            "effects": [
+                {
+                    "type": "passive",
+                    "trigger": "onDestroyEnemyUnit",
+                    "action": "dealDamageToShield",
+                    "params": {
+                        "value": 5
+                    }
+                },
+                {
+                    "type": "passive",
+                    "trigger": "onAttack",
+                    "action": "canChooseActiveEnemyUnitAsTarget",
+                    "params": {
+                        "condition": "Lv <= 4"
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST02",
+            "id_carta": "002",
+            "name": "Wing Gundam (Bird Mode)",
+            "card_type": "UNIT",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 3,
+            "cost": 3,
+            "trait": "Operation Meteor",
+            "link_requirement": "[Heero Yuy]",
+            "zone": "Space/Earth",
+            "ap": 2,
+            "hp": 2,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam Wing",
+            "effects": [
+                {
+                    "type": "deploy",
+                    "action": "placeEXResource",
+                    "params": {
+                        "quantity": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST02",
+            "id_carta": "005",
+            "name": "Maganac",
+            "card_type": "UNIT",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 2,
+            "cost": 2,
+            "trait": "Maganac Corps",
+            "link_requirement": "",
+            "zone": "Space/Earth",
+            "ap": 3,
+            "hp": 2,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam Wing",
+            "effects": []
+        },
+        {
+            "id_coleccion": "ST02",
+            "id_carta": "010",
+            "name": "Heero Yuy",
+            "card_type": "PILOT",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 4,
+            "cost": 1,
+            "trait": "Operation Meteor",
+            "link_requirement": "",
+            "zone": "",
+            "ap": 0,
+            "hp": 0,
+            "ap_boost": 2,
+            "hp_boost": 1,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam Wing",
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "addThisCardToHand"
+                },
+                {
+                    "type": "passive",
+                    "condition": "linked",
+                    "effect": {
+                        "ap_boost": 1,
+                        "hp_boost": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST02",
+            "id_carta": "012",
+            "name": "Simultaneous Fire",
+            "card_type": "COMMAND",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 4,
+            "cost": 1,
+            "trait": "Operation Meteor",
+            "link_requirement": "",
+            "zone": "",
+            "ap": 0,
+            "hp": 0,
+            "ap_boost": 1,
+            "hp_boost": 1,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam Wing",
+            "effects": [
+                {
+                    "type": "main",
+                    "action": "grantBreach",
+                    "params": {
+                        "target": "friendlyUnit",
+                        "breachValue": 3,
+                        "duration": "thisTurn"
+                    }
+                },
+                {
+                    "type": "pilot",
+                    "required_pilot": "Trowa Barton"
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST02",
+            "id_carta": "013",
+            "name": "Peaceful Timbre",
+            "card_type": "COMMAND",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 4,
+            "cost": 1,
+            "trait": "Operation Meteor",
+            "link_requirement": "",
+            "zone": "",
+            "ap": 0,
+            "hp": 0,
+            "ap_boost": 1,
+            "hp_boost": 1,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam Wing",
+            "effects": [
+                {
+                    "type": "action",
+                    "action": "shieldProtection",
+                    "params": {
+                        "condition": "enemyUnitLevel <= 4",
+                        "duration": "thisBattle"
+                    }
+                },
+                {
+                    "type": "pilot",
+                    "required_pilot": "Quatre Raberba Winner"
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST02",
+            "id_carta": "015",
+            "name": "Saint Gabriel Institute",
+            "card_type": "BASE",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 2,
+            "cost": 2,
+            "trait": "Academy/Stronghold",
+            "link_requirement": "",
+            "zone": "Earth",
+            "ap": 0,
+            "hp": 5,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam Wing",
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "deployCard"
+                },
+                {
+                    "type": "deploy",
+                    "action": "shieldAndDeckManipulation",
+                    "params": {
+                        "shieldAction": "addToHand",
+                        "deckAction": {
+                            "lookTop": 2,
+                            "returnTop": 1,
+                            "returnBottom": 1
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST03",
+            "id_carta": "007",
+            "name": "Zaku I",
+            "card_type": "UNIT",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 1,
+            "cost": 1,
+            "trait": "Zeon",
+            "link_requirement": "",
+            "zone": "Space/Earth",
+            "ap": 1,
+            "hp": 2,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam",
+            "effects": []
+        },
+        {
+            "id_coleccion": "ST03",
+            "id_carta": "008",
+            "name": "Zaku II",
+            "card_type": "UNIT",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 2,
+            "cost": 1,
+            "trait": "Zeon",
+            "link_requirement": "",
+            "zone": "Space/Earth",
+            "ap": 1,
+            "hp": 2,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam",
+            "effects": [
+                {
+                    "type": "attack",
+                    "action": "modifySelf",
+                    "params": {
+                        "apChange": 2,
+                        "duration": "turn"
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST03",
+            "id_carta": "011",
+            "name": "Char Aznable",
+            "card_type": "PILOT",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 3,
+            "cost": 1,
+            "trait": "Zeon/Newtype",
+            "link_requirement": "",
+            "zone": "",
+            "ap": 0,
+            "hp": 0,
+            "ap_boost": 1,
+            "hp_boost": 1,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam",
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "addToHand"
+                },
+                {
+                    "type": "attack",
+                    "action": "modifySelf",
+                    "params": {
+                        "apChange": 1,
+                        "duration": "turn"
+                    }
+                },
+                {
+                    "type": "attack",
+                    "condition": "isLinked",
+                    "action": "gainAbility",
+                    "params": {
+                        "ability": "High-Maneuver",
+                        "description": "This Unit can't be blocked.",
+                        "duration": "turn"
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST03",
+            "id_carta": "016",
+            "name": "Falmel",
+            "card_type": "BASE",
+            "rarity": "C",
+            "color": "GREEN",
+            "level": 3,
+            "cost": 2,
+            "trait": "Zeon/Battleship",
+            "link_requirement": "",
+            "zone": "Space",
+            "ap": 0,
+            "hp": 5,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam",
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "deploy"
+                },
+                {
+                    "type": "deploy",
+                    "action": "addShieldToHand"
+                },
+                {
+                    "type": "deploy",
+                    "condition": "isYourTurn",
+                    "action": "deployToken",
+                    "params": {
+                        "token": "Char's Zaku Ⅱ",
+                        "trait": "Zeon",
+                        "ap": 3,
+                        "hp": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST04",
+            "id_carta": "001",
+            "name": "Aile Strike Gundam",
+            "card_type": "UNIT",
+            "rarity": "LR",
+            "color": "WHITE",
+            "level": 5,
+            "cost": 4,
+            "trait": "Earth Alliance",
+            "link_requirement": "[Kira Yamato]",
+            "zone": "Space/Earth",
+            "ap": 4,
+            "hp": 4,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam SEED",
+            "effects": [
+                {
+                    "type": "blocker",
+                    "action": "restThisUnit"
+                },
+                {
+                    "type": "whenPaired",
+                    "condition": "Lv.4 or Higher Pilot",
+                    "action": "chooseEnemyUnit",
+                    "params": {
+                        "condition": "HP <= 4",
+                        "action": "returnToHand"
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST04",
+            "id_carta": "002",
+            "name": "Strike Gundam",
+            "card_type": "UNIT",
+            "rarity": "C",
+            "color": "WHITE",
+            "level": 4,
+            "cost": 2,
+            "trait": "Earth Alliance",
+            "link_requirement": "[Kira Yamato]",
+            "zone": "Space/Earth",
+            "ap": 3,
+            "hp": 3,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam SEED",
+            "effects": [
+                {
+                    "type": "deploy",
+                    "action": "drawDiscard",
+                    "params": {
+                        "draw": 1,
+                        "discard": 1
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST04",
+            "id_carta": "005",
+            "name": "Strike Dagger",
+            "card_type": "UNIT",
+            "rarity": "C",
+            "color": "WHITE",
+            "level": 2,
+            "cost": 2,
+            "trait": "Earth Alliance",
+            "link_requirement": "",
+            "zone": "Space/Earth",
+            "ap": 3,
+            "hp": 2,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam SEED",
+            "effects": []
+        },
+        {
+            "id_coleccion": "ST04",
+            "id_carta": "010",
+            "name": "Kira Yamato",
+            "card_type": "PILOT",
+            "rarity": "C",
+            "color": "WHITE",
+            "level": 4,
+            "cost": 1,
+            "trait": "Earth Alliance/Coordinator",
+            "link_requirement": "",
+            "zone": "",
+            "ap": 2,
+            "hp": 1,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam SEED",
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "addToHand",
+                    "params": {}
+                },
+                {
+                    "type": "attack",
+                    "action": "chooseEnemyUnit",
+                    "params": {
+                        "action": "applyDebuff",
+                        "debuff": "AP-2"
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST04",
+            "id_carta": "013",
+            "name": "Hawk of Endymion",
+            "card_type": "COMMAND",
+            "rarity": "C",
+            "color": "WHITE",
+            "level": 2,
+            "cost": 1,
+            "trait": "Earth Alliance",
+            "link_requirement": "",
+            "zone": "",
+            "ap": 0,
+            "hp": 0,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam SEED",
+            "effects": [
+                {
+                    "type": "main_action",
+                    "action": "chooseEnemyUnit",
+                    "params": {
+                        "condition": "HP <= 3",
+                        "action": "returnToHand"
+                    }
+                }
+            ]
+        },
+        {
+            "id_coleccion": "ST04",
+            "id_carta": "015",
+            "name": "Archangel",
+            "card_type": "BASE",
+            "rarity": "C",
+            "color": "WHITE",
+            "level": 3,
+            "cost": 1,
+            "trait": "Earth Alliance/Battleship",
+            "link_requirement": "",
+            "zone": "Space/Earth",
+            "ap": 0,
+            "hp": 5,
+            "ap_boost": 0,
+            "hp_boost": 0,
+            "block_icon": "β",
+            "source_title": "Mobile Suit Gundam SEED",
+            "effects": [
+                {
+                    "type": "burst",
+                    "action": "deployCard",
+                    "params": {
+                        "card": "Shield"
+                    }
+                },
+                {
+                    "type": "deploy",
+                    "action": "addShieldToHand",
+                    "params": {}
+                },
+                {
+                    "type": "activate_main_once_per_turn",
+                    "action": "chooseFriendlyUnitWithBlocker",
+                    "params": {
+                        "action": "setAsActive",
+                        "condition": "can'tAttackThisTurn"
+                    }
+                }
+            ]
+        }
+    ]
+}

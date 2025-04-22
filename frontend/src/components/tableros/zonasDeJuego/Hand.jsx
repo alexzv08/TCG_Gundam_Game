@@ -10,7 +10,7 @@ const Hand = ({ hand, rivalHand, setShowModalCarta, setModalCarta, onDragStart  
     };
 
     return (
-        <div className="bg-opacity-25 absolute left-0 right-0 mx-auto -bottom-0 h-[140px] w-auto flex items-center justify-center bg-black gap-5">
+        <div className="bg-opacity-25 absolute left-0 right-0 mx-auto -bottom-0 h-[140px] w-[67%] flex items-center justify-center bg-black gap-5">
             {Array.isArray(hand) && hand.length > 0 ? (
                 hand.map((card, index) => (
                     <div key={`${card.id_carta}-${index}`} className="card" draggable>

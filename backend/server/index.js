@@ -86,13 +86,28 @@ io.on('connection', (socket) => {
         if (!playersReady[roomId]) {
             playersReady[roomId] = {};
         }
-
+        console.log("decidirMulligan", roomId)
+        console.log("playerId", playerId)
+        console.log("decision", decision)
         playersReady[roomId][playerId] = decision;
 
         // Si ambos jugadores han decidido, avanzar
         if (Object.keys(playersReady[roomId]).length === 2) {
+            console.log("Ambos jugadores han decidido")
             io.to(roomId).emit("mulliganFinalizado", playersReady[roomId]);
             delete playersReady[roomId]; // Limpiar estado para la siguiente fase
+        }
+    });
+
+
+    socket.on("startTurn", ({ roomId, currentPlayer }) => {
+        if (!rooms[roomId]) {
+            rooms[roomId] = { turnStarted: false };
+        }
+
+        if (!rooms[roomId].turnStarted) {
+            rooms[roomId].turnStarted = true;
+            io.in(roomId).emit("turnoComenzado", currentPlayer);
         }
     });
 

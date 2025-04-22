@@ -10,6 +10,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import FiltroCartas from '../components/filtroCartas/FiltroCartas';
 import ListadoCartas from '../components/listadoCartas/ListadoCartas';
 import MazoActual from '../components/mazoActual/MazoActual';
+import CartaModal from '../components/modalCarta/CartaModal.jsx';
 
 const CreateDeck = () => {
 
@@ -21,6 +22,9 @@ const CreateDeck = () => {
     const [cartasFiltradas, setCartasFiltradas] = useState(cartas); 
     const types = ['Unit', 'Pilot', 'Command', 'Base','Token']; // Tipos posibles
     const colors = ['Red', 'Blue', 'Green', 'White']; // Colores posibles
+
+    const [showModalCarta, setShowModalCarta] = useState(false);
+    const [modalCarta, setModalCarta] = useState(null)
 
     // useEffect para cargar las cartas desde el backend
     useEffect(() => {
@@ -87,36 +91,60 @@ const CreateDeck = () => {
     // Función para filtrar las cartas
     const applyFilters = (filters) => {
         const cartasFiltradas = cartas.filter((carta) => {
-            
+            // console.log("Carta:", carta);
+    
+            // Si un campo es null o vacío, la carta no se muestra
+            if (!carta.card_name || !carta.card_type || !carta.color) {
+                return false;
+            }
+    
             if (filters.name && !carta.card_name.toLowerCase().includes(filters.name.toLowerCase())) {
                 return false;
             }
-            if (filters.type && carta.card_type.toLowerCase() !== filters.type.toLowerCase()) {
+            if (filters.type && !carta.card_type.toLowerCase().includes(filters.type.toLowerCase())) {
                 return false;
             }
-            if (filters.color && carta.color.toLowerCase() !== filters.color.toLowerCase()) {
+            if (filters.color && !carta.color.toLowerCase().includes(filters.color.toLowerCase())) {
                 return false;
             }
-            if (filters.hp && carta.hp < Number(filters.hp)) {
+            if (filters.hp && (!carta.hp || carta.hp < Number(filters.hp))) {
                 return false;
             }
-            if (filters.ap && carta.ap < Number(filters.ap)) {
+            if (filters.ap && (!carta.ap || carta.ap < Number(filters.ap))) {
                 return false;
             }
-            if (filters.level && carta.level < Number(filters.level)) {
+            if (filters.level && (!carta.level || carta.level < Number(filters.level))) {
                 return false;
             }
-            if (filters.cost && carta.cost < Number(filters.cost)) {
+            if (filters.cost && (!carta.cost || carta.cost < Number(filters.cost))) {
                 return false;
             }
+    
             return true;
         });
-
+    
         setCartasFiltradas(cartasFiltradas);
     };
+    
 
+    // Función para abrir el modal de la carta
+    const abrirModal = (carta) => {
+        console.log("Carta seleccionada:", carta);
+        setModalCarta(carta); // Pasamos el objeto de la carta seleccionada
+        setShowModalCarta(true); // Mostramos el modal
+    };
+
+    const closeModalCarta = () => {
+        setModalCarta(null); // Limpiamos la carta seleccionada
+        setShowModalCarta(false); // Cerramos el modal
+    };
     return (
         <div className="h-screen p-0 overflow-hidden">
+            <CartaModal 
+                        show={showModalCarta}
+                        close={closeModalCarta}
+                        carta={modalCarta}
+                    />
             <div>
                 <main className='flex p-0 m-0 border-red-50'>
                     <Sidebar />
@@ -125,10 +153,10 @@ const CreateDeck = () => {
                         <FiltroCartas cartas={cartas} onFilter={applyFilters} types={types} colors={colors} />
                         <div className='grid grid-cols-4 gap-4'>
                             <div className='h-[calc(100dvh-2%)] overflow-y-auto pb-14 pr-2 pt-2 col-span-3'>
-                                <ListadoCartas cartas={cartasFiltradas} onAddToDeck={handleAddToDeck} onRestToDeck={handleRemoveFromDeck} />
+                                <ListadoCartas cartas={cartasFiltradas} onAddToDeck={handleAddToDeck} onRestToDeck={handleRemoveFromDeck} onOpenModalCarta={abrirModal} />
                             </div>
                             <div className='h-[calc(100dvh-2%)] overflow-y-auto pb-14 pr-2 pt-2'>
-                                <MazoActual mazo={mazo} onRemoveFromDeck={handleRemoveFromDeck} />
+                                <MazoActual mazo={mazo} onRemoveFromDeck={handleRemoveFromDeck} onAddToDeck={handleAddToDeck} onRestToDeck={handleRemoveFromDeck} onOpenModalCarta={abrirModal}/>
                             </div>
                         </div>
                     </div> 

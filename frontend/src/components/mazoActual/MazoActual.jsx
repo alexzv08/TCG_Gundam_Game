@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 
-    const MazoActual = ({ mazo, onRemoveFromDeck }) => {
+    const MazoActual = ({ mazo, onRemoveFromDeck, onAddToDeck, onRestToDeck, onOpenModalCarta }) => {
     // Validar que mazo sea un array
     const mazoSeguro = Array.isArray(mazo) ? mazo : [];
-    
+    // const [mazoSeguro, setMazoSeguro] = useState(Array.isArray(mazo) ? mazo : []);
+
     const guardarMazo = async () => {
         const cartas = mazoSeguro.map((item) => ({
             id_juego: item.carta.id_juego,
@@ -25,7 +27,7 @@ import PropTypes from "prop-types";
 
         try {
             const token = localStorage.getItem("token")
-            const response = await fetch('http://localhost:5000/api/guardar-mazo', {
+            const response = await fetch('http://192.168.1.136:5000/api/guardar-mazo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -47,12 +49,14 @@ import PropTypes from "prop-types";
         } catch (error) {
             console.error('Error en la petición:', error);
         }
-    };
+    }
 
     return (
         <div className="mazo-actual">
-            <div className="flex items-center justify-between px-2">
-                <h2 className="text-xl text-white">Tu Mazo</h2>
+            <div className="flex items-center justify-between px-2 mb-2">
+                <h2 className="text-xl text-white">Total {mazoSeguro.reduce((total, item) => total + item.cantidad, 0)}</h2>
+                <button className="px-1 text-xl text-white border rounded-md">Stats</button>
+                <button className="px-1 text-xl text-white border rounded-md">Clear</button>
                 <button className="p-1 px-2 text-xl text-white bg-green-400 rounded-lg "
                     onClick={() => {
                         guardarMazo();
@@ -63,10 +67,18 @@ import PropTypes from "prop-types";
                 mazoSeguro.map((item) => (
                     <div
                         key={`${item.carta.id_coleccion}-${item.carta.id_carta}`}
-                        className="flex justify-between p-0 m-0 text-white rounded-lg"
+                        className="flex justify-between p-0 m-0 text-white rounded-lg cursor-default"
                     >
-                        <div className="flex items-center w-full gap-2 hover:opacity-55">
-                            <div className={`bg-${item.carta.color}-500 h-10 w-10 text-[10px]`}>
+                        <div className="relative flex items-center w-full gap-2 group ">
+                            <div className="absolute left-[25%] flex justify-center gap-2 opacity-0 group-hover:opacity-100 items-center">
+                                <button className="text-center text-black bg-white border-black rounded-full cursor-pointer w-7 h-7"
+                                onClick={() => onAddToDeck(item.carta)}>+</button>
+                                <div className="text-center text-black bg-white border-black rounded-full cursor-pointer w-7 h-7"
+                                onClick={() => onRemoveFromDeck(item.carta)}>-</div>
+                                <div className="px-2 text-center text-black bg-white border-black rounded-md cursor-pointer w-15 h-7"
+                                onClick={() => onOpenModalCarta(item.carta)}>VIEW</div>
+                            </div>
+                            <div className={`bg-${item.carta.color}-500 h-10 w-10 text-[10px] group-hover:opacity-55`}>
                                 <p>{"Level "+item.carta.level}  </p>
                                 <p>{"Cost "+item.carta.cost}    </p>
                             </div> {/* Color de la Carta */}
@@ -107,6 +119,9 @@ import PropTypes from "prop-types";
 MazoActual.propTypes = {
     mazo: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
     onRemoveFromDeck: PropTypes.func.isRequired,
+    onAddToDeck: PropTypes.func,
+    onRestToDeck: PropTypes.func,
+    onOpenModalCarta: PropTypes.func,
 };
 
 export default MazoActual;

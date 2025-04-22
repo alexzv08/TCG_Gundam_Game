@@ -34,7 +34,7 @@ const RegisterForm = () => {
 
         try {
             // Hacer la solicitud POST al backend para registrar el usuario
-            const respuesta = await axios.post('http://localhost:5000/api/register', datos);
+            const respuesta = await axios.post('http://192.168.1.136:5000/api/register', datos);
 
             // Si la respuesta es exitosa, mostrar un mensaje
             setMensaje('Usuario registrado con éxito.');

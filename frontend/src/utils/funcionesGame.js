@@ -28,7 +28,7 @@ export const drawInitialHand = (deck) => {
 // Inicializar el mazo
 export const initializeDeck = async (setDeck, setHand, setDeckInitialized) => {
     try {
-        const response = await fetch("http://localhost:5000/api/recuperarMazo");
+        const response = await fetch("http://192.168.1.136:5000/api/recuperarMazo");
         const data = await response.json();
 
         let generatedDeck = buildDeck(data[0]);
@@ -39,26 +39,34 @@ export const initializeDeck = async (setDeck, setHand, setDeckInitialized) => {
         setDeck(remainingDeck);
         setHand(initialHand);
         setDeckInitialized(true);
+        console.log("Deck restante ",remainingDeck.length,":", remainingDeck);
+
+        return initialHand; // <-- Devuelve la mano directamente
     } catch (error) {
         console.error("Error al inicializar el mazo:", error);
+        return []; // Por si falla, que no pete
     }
 };
 
-export const shieldAdd = (setShieldArea, setDeck, deck) => {
-    setShieldArea(prevShield => {
-        const initialShield = deck.slice(0, 6);
+
+export const shieldAdd = (setShieldArea, setDeck, currentDeck) => {
+    console.log("Deck actual:", currentDeck);
+    const initialShield = currentDeck.slice(0, 6);      // las primeras 6 cartas para el escudo
+    const remainingDeck = currentDeck.slice(6);         // el resto se queda en el deck
+
+    setShieldArea(() => {
+        console.log("Cartas en los escudos:", initialShield);
         return initialShield;
     });
 
-    setDeck(prevDeck => {
-        const remainingDeck = deck.slice(6);
+    setDeck(() => {
         return remainingDeck;
     });
 };
 
 export const baseTokenAdd = async(setBaseArea) =>{
     try {
-        const response = await fetch("http://localhost:5000/api/recuperarBaseToken");
+        const response = await fetch("http://192.168.1.136:5000/api/recuperarBaseToken");
         const data = await response.json();
 
         setBaseArea(data[0])
@@ -67,31 +75,19 @@ export const baseTokenAdd = async(setBaseArea) =>{
     }
 }
 
-export const resourceAdd = async(setResourceArea,setResourceDeck) =>{
-    try {
-        const response = await fetch("http://localhost:5000/api/recuperarResource");
-        const data = await response.json();
+export const addResource = (setResources) => {
+    setResources(prev => [...prev, { active: true, ex: false }]);
+  };
 
-
-        // buildResourceDeck()
-        await setResourceDeck(buildResourceDeck(data[0]))
-        await setResourceArea(placeExResourceP2(data[0]))
-    } catch (error) {
-        console.error("Error al recuperar el token base: ",error)
-    }
+export const addResourceEx = (setResources)=> {
+    setResources(prev => [...prev, { active: true, ex: true }]);
 }
 
-const buildResourceDeck = (data)=> {
-    const deckResource = [];
-    for (let i = 0; i < 10; i++) {
-        deckResource.push({ ...data[1] });
-    }
-    return deckResource;
-}
-
-const placeExResourceP2 = (data)=> {
-    const exResource = []
-    exResource.push({ ...data[0] });
-
-    return exResource;
+export const drawCard = (deck, setDeck, setHand, cuantiti) => {
+    const drawnCards = deck.slice(0, cuantiti); 
+    const remainingDeck = deck.slice(cuantiti);
+    setDeck(remainingDeck);
+    setHand((prevHand) => [...prevHand, ...drawnCards]); 
+    console.log("Cartas en la mano:", drawnCards);
+    return { drawnCards, remainingDeck };
 }

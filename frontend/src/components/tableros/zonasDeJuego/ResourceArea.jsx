@@ -15,7 +15,7 @@ const ResourceArea = () => {
                             <div className="flex flex-col items-center gap-2" >
                                 <h2 className="text-lg font-bold">Base</h2>
                                 <div className="w-24 h-32 border border-gray-500 border-dashed">
-                                    
+                                    <div className="w-20 h-20 bg-black"></div>
                                 </div>
                             </div>
                         </div>

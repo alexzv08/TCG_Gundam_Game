@@ -2,7 +2,7 @@
 export const obtenerCartas = async () => {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://localhost:5000/api/cartas',{
+        const response = await fetch('http://192.168.1.136:5000/api/cartas',{
 
     }); // Ajusta la URL si es necesario
         const data = await response.json();
