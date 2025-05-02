@@ -1,10 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import CreateDeck from "./paginas/CreateDeck";
-import Register from "./paginas/Register";
-import Login from "./paginas/Login";
-import ZonaDeJuegos from "./paginas/ZonaDeJuegos";
-import Tablero from "./components/tableros/Tablero"
-import Prueba from "./paginas/Prueba";
+import CreateDeck from "./pages/CreateDeck";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Tablero from "./templates/Tablero"
+import Prueba from "./pages/Prueba";
 
 // import { useEffect, useState } from 'react';
 // import { io } from 'socket.io-client';
@@ -21,7 +20,6 @@ const App = () => {
             <Route path="/" element={<Login />} /> {/* Ruta para crear mazo */}
             <Route path="/register" element={<Register />} /> {/* Ruta para crear mazo */}
             <Route path="/home" element={<CreateDeck />} /> {/* Ruta para crear mazo */}
-            <Route path="/playgame" element={<ZonaDeJuegos />} /> {/* Ruta para crear mazo */}
             <Route path="/prueba" element={<Prueba />} /> {/* Ruta para crear mazo */}
             <Route path="/tablero" element={<Tablero />} /> {/* Ruta para crear mazo */}
 

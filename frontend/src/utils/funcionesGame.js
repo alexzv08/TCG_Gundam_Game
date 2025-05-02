@@ -1,3 +1,4 @@
+import { PHASES_SETUP, PHASES } from '../constant/phases';
 // Construir el mazo
 export const buildDeck = (cardsData) => {
     const deck = [];
@@ -39,7 +40,6 @@ export const initializeDeck = async (setDeck, setHand, setDeckInitialized) => {
         setDeck(remainingDeck);
         setHand(initialHand);
         setDeckInitialized(true);
-        console.log("Deck restante ",remainingDeck.length,":", remainingDeck);
 
         return initialHand; // <-- Devuelve la mano directamente
     } catch (error) {
@@ -49,13 +49,24 @@ export const initializeDeck = async (setDeck, setHand, setDeckInitialized) => {
 };
 
 
-export const shieldAdd = (setShieldArea, setDeck, currentDeck) => {
-    console.log("Deck actual:", currentDeck);
+export const shieldAdd = (setShields, setDeck, deck) => {
+    const initialShield = deck.slice(0, 6);      // las primeras 6 cartas para el escudo
+    const remainingDeck = deck.slice(6);         // el resto se queda en el deck
+
+    setShields(() => {
+        return initialShield;
+    });
+
+    setDeck(() => {
+        return remainingDeck;
+    });
+};
+
+export const shieldRemove = (setShieldArea, setDeck, currentDeck) => {
     const initialShield = currentDeck.slice(0, 6);      // las primeras 6 cartas para el escudo
     const remainingDeck = currentDeck.slice(6);         // el resto se queda en el deck
 
     setShieldArea(() => {
-        console.log("Cartas en los escudos:", initialShield);
         return initialShield;
     });
 
@@ -68,7 +79,6 @@ export const baseTokenAdd = async(setBaseArea) =>{
     try {
         const response = await fetch("http://192.168.1.136:5000/api/recuperarBaseToken");
         const data = await response.json();
-
         setBaseArea(data[0])
     } catch (error) {
         console.error("Error al recuperar el token base: ",error)
@@ -77,7 +87,15 @@ export const baseTokenAdd = async(setBaseArea) =>{
 
 export const addResource = (setResources) => {
     setResources(prev => [...prev, { active: true, ex: false }]);
-  };
+};
+
+export const removeExResource = (setResources) => {
+    setResources(prev => {
+        const idx = prev.findIndex(r => r.ex === true);
+        if (idx === -1) return prev;
+            return [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+        });
+};
 
 export const addResourceEx = (setResources)=> {
     setResources(prev => [...prev, { active: true, ex: true }]);
@@ -88,6 +106,48 @@ export const drawCard = (deck, setDeck, setHand, cuantiti) => {
     const remainingDeck = deck.slice(cuantiti);
     setDeck(remainingDeck);
     setHand((prevHand) => [...prevHand, ...drawnCards]); 
-    console.log("Cartas en la mano:", drawnCards);
-    return { drawnCards, remainingDeck };
+
+    // return { drawnCards, remainingDeck };
+}
+
+export const nextTurn = (setCurrentPlayer, players) => {
+    setCurrentPlayer(prev => {
+    
+        const idx = players.indexOf(prev);
+    
+        const nextIdx = (idx + 1) % players.length;
+    
+        return players[nextIdx];
+    });
+};
+
+export const nextPhase = (  
+    hasRunSetup,
+    setupPhaseIndex,
+    turnPhaseIndex,
+    setHasRunSetup,
+    setSetupPhaseIndex,
+    setTurnPhaseIndex,
+    nextTurn) => {
+
+    if (!hasRunSetup) {
+      // Avanzar dentro de setup
+        if (setupPhaseIndex < PHASES_SETUP.length - 1) {
+            setSetupPhaseIndex(i => i + 1);
+        } else {
+            // Terminó setup: pasa al ciclo normal
+            setHasRunSetup(true);
+            setTurnPhaseIndex(0);
+        }
+        } else {
+        // Avanzar dentro del turno normal
+        if (turnPhaseIndex < PHASES.length - 1) {
+            setTurnPhaseIndex(i => i + 1);
+        } else {
+            // terminaste END_PHASE: vuelve a DRAW_PHASE del siguiente turno
+            setTurnPhaseIndex(0);
+            // aquí también podrías disparar change of turn
+            nextTurn();
+        }
+    }
 }

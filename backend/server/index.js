@@ -68,8 +68,8 @@ io.on('connection', (socket) => {
             roomFound.players.push(user);
             socket.join(roomFound.id);
             añadirJugador(socket, user, roomFound.id);
-            io.to(roomFound.id).emit('salaEncontrada', roomFound, randomStartPlayer(roomFound.players));
             console.log(`Jugador ${user} se unió a la sala ${roomFound.players}`);
+            io.to(roomFound.id).emit('salaEncontrada', roomFound, randomStartPlayer(roomFound.players));
         } else {
             // Crear una nueva sala
             const newRoom = { id: `room-${Date.now()}`, players: [user] };

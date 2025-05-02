@@ -41,6 +41,7 @@ const createGame = (socket, user, roomId) => {
             gameStatus: "Waiting Opponent",
         }
     });
+    console.log(games.length);
 }
 const añadirJugador = (socket, user, roomId) => {
     console.log("Añadiendo jugador...");
@@ -52,6 +53,6 @@ const añadirJugador = (socket, user, roomId) => {
         game.game.players.player2.socketPlayer2 = socket;
         game.game.gameStatus = "Game Started";
     }
-    console.log(games);
+    console.log(game);
 }
 module.exports = { createGame, añadirJugador };
