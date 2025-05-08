@@ -13,6 +13,7 @@ import {
     nextTurn,
     nextPhase
 } from '../utils/funcionesGame';
+import { use } from 'react';
 
 
 const GameContext = createContext();
@@ -36,24 +37,43 @@ export function GameProvider({ children }) {
 
 
         // --- State refs ---
-        const deckRef = useRef([]);
         const roomIdRef = useRef(null);
         const turnRef = useRef(null);
         const pendingSearch = useRef(null);
     
         // --- Game state ---
+        // datos del mazo
         const [deck, setDeck] = useState([]);
         const [deckInitialized, setDeckInitialized] = useState(false);
+        const deckRef = useRef([]);
+        // datos mazo rival
+        const [deckRival, setDeckRival] = useState([]);
         // datos de la mano
         const [hand, setHand] = useState([]);
         const handRef = useRef([]);
-
+        // datos de la mano rival
+        const [handRival, setHandRival] = useState([]);
+        const handRivalRef = useRef([]);
+        // datos de la zona de batalla
         const [battleCards, setBattleCards] = useState([]);
+        // datos de la zona de batalla rival
+        const [battleCardsRival, setBattleCardsRival] = useState([]);
+        // datos de la zona de descarte
         const [trash, setTrash] = useState([]);
+        // datos de la zona de descarte rival
+        const [trashRival, setTrashRival] = useState([]);
+        // datos de la zona de escudos
         const [shields, setShields] = useState([]);
+        // datos de la zona de escudos rival
+        const [shieldsRival, setShieldsRival] = useState([]);
+        // datos de la zona de la base
         const [baseArea, setBaseArea] = useState([]);
+        // datos de la zona de la base rival
+        const [baseAreaRival, setBaseAreaRival] = useState([]);
+        // datos de la zona de resources//energia
         const [myResources, setMyResources] = useState([]);
         const [rivalResources, setRivalResources] = useState([]);
+        // datos de los turnos
         const [turn, setTurn] = useState(null);
         const [isMyTurn, setIsMyTurn] = useState(false);
         const [gameTurn, setGameTurn] = useState(0);
@@ -74,11 +94,14 @@ export function GameProvider({ children }) {
         // Modal en el que enseño cartas
         const [showModalAcciones, setShowModalAcciones] = useState(false);
         const [configModalModalAcciones, setConfigModalModalAcciones] = useState({});
+        const [showCartaModal, setShowCartaModal] = useState(false);
+        const [selectedCarta, setSelectedCarta] = useState(null);
     // — Ref para búsquedas —
 
     // — Handlers definidos una sola vez —
     const onSalaCreada = room => console.log('Sala creada:', room);
     const onSalaEncontrada = (room,startPlayer) => {
+        roomIdRef.current = room.id;
         setPlayers(room.players);
         setCurrentPlayer(startPlayer);
         setTurnCount(1);
@@ -97,9 +120,38 @@ export function GameProvider({ children }) {
         if (!socket.connected) socket.connect();
         socket.once('salaCreada',    onSalaCreada);
         socket.once('salaEncontrada', onSalaEncontrada);
+        socket.on('opponentHand', ({ playerId, hand }) => {
+            setHandRival(hand);
+        });
+        socket.on('opponentDeck', ({ playerId, deck }) => {
+            console.log("Mazo rival:", deck);
+            setDeckRival(deck);
+        });
+        socket.on("opponentShields", ({ playerId, shields }) => {
+            console.log("Escudos rival:", shields);
+            setShieldsRival(shields);
+        })
+        socket.on("opponentResources", ({ playerId, resources }) => {
+            console.log("Recursos rival:", resources);
+            setRivalResources(resources);
+        })
+        socket.on("opponentBaseArea", ({ playerId, baseArea }) => {
+            console.log("Base rival:", baseArea);
+            setBaseAreaRival(baseArea);
+        })
+        socket.on("opponentBattleArea", ({ playerId, battleCards }) => {
+            setBattleCardsRival(battleCards);
+            console.log("Cartas de batalla rival:", battleCards);
+        })
+        socket.on("opponentTrash", ({ playerId, trash }) => {
+            console.log("Basura rival:", trash);
+            setTrashRival(trash);
+        })
         return () => {
         socket.off('salaCreada',    onSalaCreada);
         socket.off('salaEncontrada', onSalaEncontrada);
+        socket.off('opponentHand');
+        socket.off('opponentDeck');
         };
     }, []);
 
@@ -107,18 +159,6 @@ export function GameProvider({ children }) {
     function buscarSala(user) {
         pendingSearch.current = user;
         socket.emit('buscarSala', user);
-    }
-    // — Accion para avanzar de fase —
-    function handleAdvancePhase() {
-        nextPhase(
-            hasRunSetup,
-            setupPhaseIndex,
-            turnPhaseIndex,
-            setHasRunSetup,
-            setSetupPhaseIndex,
-            setTurnPhaseIndex,
-            nextTurn
-        );
     }
 
     // — Funcion para cambiar el turno —
@@ -146,7 +186,13 @@ export function GameProvider({ children }) {
         SETUP_DECK: async () => {
             // Inicializa el mazo y lo guarda en la ref
             const mano = await initializeDeck(setDeck, setHand, setDeckInitialized);
-            handRef.current = mano;
+            console.log("Mano inicial:", mano["initialHand"]);
+            handRef.current = mano["initialHand"];
+            deckRef.current = mano["remainingDeck"];
+
+            syncHand(); // Sincroniza la mano con el rival
+            syncDeck(); // Sincroniza el mazo con el rival
+
             setSetupPhaseIndex(i => i + 1); // Avanza a la siguiente fase de setup
         },
         MULLIGAN: () => {
@@ -159,8 +205,13 @@ export function GameProvider({ children }) {
                 cartas: manoActual,
                 actions: [
                     { 
-                        label: 'Aceptar', onClick: () => {
-                        initializeDeck(setDeck, setHand, setDeckInitialized);
+                        label: 'Aceptar', onClick: async () => {
+                        const mano = await initializeDeck(setDeck, setHand, setDeckInitialized);
+                        handRef.current = mano["initialHand"];
+                        deckRef.current = mano["remainingDeck"];
+
+                        syncHand();
+                        syncDeck();
                         setShowModalAcciones(false);
                         setSetupPhaseIndex(i => i + 1); 
                         }, 
@@ -204,9 +255,13 @@ export function GameProvider({ children }) {
             }
             setTurnPhaseIndex(i => i + 1); 
         },
-        DRAW_PHASE: () => {
+        DRAW_PHASE: async () => {
             if(currentPlayer === localStorage.getItem('user')) {
-                drawCard(deck, setDeck, setHand, 1)
+                const datos = await drawCard(deck, setDeck, setHand, 1,handRef)
+                deckRef.current = datos["remainingDeck"];
+
+            syncHand(); // Sincroniza la mano con el rival
+            syncDeck(); // Sincroniza el mazo con el rival
             }
             setTurnPhaseIndex(i => i + 1); 
         },
@@ -220,6 +275,87 @@ export function GameProvider({ children }) {
 
     }
 
+    // — Use efects para sincronizar —
+    // Dentro de GameProvider:
+    useEffect(() => {
+        // Cada vez que cambie `hand`, sincroniza
+        syncHand();
+    }, [hand]);
+    
+    useEffect(() => {
+        // Cada vez que cambie `deck`, sincroniza
+        syncDeck();
+    }, [deck]);
+
+    useEffect(() => {
+        syncShields();
+    }, [shields]);
+
+    useEffect(() => {
+        syncResources();
+    }, [myResources]);
+
+    useEffect(() => {
+        syncBaseArea();
+    }, [baseArea]);
+
+    useEffect(() => {
+        syncBattleCards()
+    }, [battleCards]);
+
+    useEffect(() => {
+        syncTrash()
+    }, [trash]);
+    // — Funciones para sincronizar datos al rival —
+    function syncHand() {
+        socket.emit('syncHand', {
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),
+            hand: handRef.current,
+        });
+    }
+    function syncDeck() {
+        socket.emit('syncDeck', {
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),
+            deck: deckRef.current,
+        });
+    }
+    function syncBattleCards() {
+        socket.emit('syncBattleCards', {
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),
+            battleCards: battleCards,
+        });
+    }
+    function syncShields() {
+        socket.emit('syncShields', {
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),
+            shields: shields,
+        });
+    }
+    function syncBaseArea() {
+        socket.emit('syncBaseArea', {
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),
+            baseArea: baseArea,
+        });
+    }
+    function syncResources() {
+        socket.emit('syncResources', {
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),
+            resources: myResources,
+        });
+    }
+    function syncTrash() {
+        socket.emit('syncTrash', {
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),
+            trash: trash,
+        });
+    }
     // — Otras acciones (draw, play, etc.) …
     // function drawOne() {
     //     const { drawnCards, remainingDeck } = drawCard(deckRef.current, 1);
@@ -232,19 +368,38 @@ export function GameProvider({ children }) {
                 // state
                 deck,
                 setDeck,
+                deckRival,
+                setDeckRival,
                 hand,
                 setHand,
+                handRival,
+                setHandRival,
+                handRef,
                 battleCards,
+                setBattleCards,
+                battleCardsRival,
+                setBattleCardsRival,
                 trash,
+                setTrash,
+                trashRival,
+                setTrashRival,
                 shields,
+                setShields,
+                shieldsRival,
+                setShieldsRival,
                 baseArea,
                 setBaseArea,
+                baseAreaRival,
+                setBaseAreaRival,
                 myResources,
                 setMyResources,
                 rivalResources,
+                setRivalResources,
                 turn,
                 isMyTurn,
                 gameTurn,
+                currentPlayer,
+                turnCount,
                 showModal,
                 setShowModal,
                 isLoading, 
@@ -252,15 +407,21 @@ export function GameProvider({ children }) {
                 modalConfig, 
                 setModalConfig,
                 showModalAcciones,
-                configModalModalAcciones,
                 setShowModalAcciones,
+                configModalModalAcciones,
                 setConfigModalModalAcciones,
+                showCartaModal,
+                setShowCartaModal,
+                selectedCarta,
+                setSelectedCarta,
                 showConfirm,
                 confirmConfig,
                 showPilotModal,
                 selectedPilot,
                 buscarSala,
-                endTurn
+                endTurn,
+                syncDeck, 
+                syncHand
         }}>
         {children}
         </GameContext.Provider>

@@ -1,19 +1,12 @@
 import PropTypes from 'prop-types';
 
-export default function BattleArea({ battleCards, onDrop, myResources, setMyResources }) {
+export default function BattleAreaRival({ battleCardsRival, onDrop, rivalResources, setRivalResources }) {
     const handleDrop = e => {
         e.preventDefault();
         const card = JSON.parse(e.dataTransfer.getData('text/plain'));
         onDrop(card);
     };
-    const toggleResourceActive = (index) => {
-        setMyResources(prev =>
-            prev.map((res, i) =>
-                i === index ? { ...res, active: !res.active } : res
-            )
-        );
-        console.log("Recurso activado/desactivado:", myResources[index]);
-    };
+    
     return (
         <div 
         className="flex flex-col items-center col-span-8 row-span-2 p-4 space-y-4 border border-gray-500" 
@@ -21,12 +14,11 @@ export default function BattleArea({ battleCards, onDrop, myResources, setMyReso
             <h2 className="w-1/3 text-lg font-bold text-center border border-black">
                 Resource
                 <div className='flex flex-wrap justify-center w-full gap-3 mt-2'>
-                    {[...myResources]
+                    {[...rivalResources]
                         .sort((a, b) => a.ex - b.ex)
                         .map((res, i) => (
                             <div
                                 key={i}
-                                onClick={() => toggleResourceActive(i)}
                                 className={`w-5 h-5 rotate-45 cursor-pointer border ${
                                 res.ex ? "bg-yellow-300" : "bg-blue-400"
                                 } ${res.active ? "" : "!bg-gray-400"}`}
@@ -37,8 +29,8 @@ export default function BattleArea({ battleCards, onDrop, myResources, setMyReso
 
             </h2>
             <div className="grid grid-cols-3 m-auto lg:gap-8 lg:grid-cols-6">
-                {Array.from({ length: 6 }).map((_, index) => {
-                    const card = battleCards[index];
+            {Array.from({ length: 6 }).map((_, index) => {
+                    const card = battleCardsRival[index];
                     return (
                         <div
                             key={index}
@@ -63,9 +55,9 @@ export default function BattleArea({ battleCards, onDrop, myResources, setMyReso
     );
 }
 
-BattleArea.propTypes = {
-    battleCards: PropTypes.array.isRequired,
+BattleAreaRival.propTypes = {
+    battleCardsRival: PropTypes.array,
     onDrop: PropTypes.func.isRequired,
-    myResources: PropTypes.array,
-    setMyResources: PropTypes.func,
+    rivalResources: PropTypes.array,
+    setRivalResources: PropTypes.func,
 };

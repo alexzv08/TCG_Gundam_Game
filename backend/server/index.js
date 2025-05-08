@@ -111,9 +111,45 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('battleAreaUpdated', (battleArea) => {
-        console.log("battleAreaUpdated", battleArea)
+    socket.on('syncHand', ({ roomId, playerId, hand }) => {
+        // Reenvía a todos menos al emisor
+        console.log("syncHand", roomId, playerId)
+        socket.to(roomId).emit('opponentHand', { playerId, hand });
     });
+    socket.on('syncDeck', ({ roomId, playerId, deck }) => {
+        // Reenvía a todos menos al emisor
+        console.log("syncDeck", roomId, playerId, deck.length)
+        socket.to(roomId).emit('opponentDeck', { playerId, deck });
+    })
+    socket.on('syncShields', ({ roomId, playerId, shields }) => {
+        // Reenvía a todos menos al emisor
+        console.log("syncShields", roomId, playerId, shields.length)
+        socket.to(roomId).emit('opponentShields', { playerId, shields });
+    });
+    socket.on('syncResources', ({ roomId, playerId, resources }) => {
+        // Reenvía a todos menos al emisor
+        console.log("syncResources", roomId, playerId, resources.length)
+        socket.to(roomId).emit('opponentResources', { playerId, resources });
+    });
+
+    socket.on('syncBaseArea', ({ roomId, playerId, baseArea }) => {
+        // Reenvía a todos menos al emisor
+        console.log("syncBaseArea", roomId, playerId, baseArea)
+        socket.to(roomId).emit('opponentBaseArea', { playerId, baseArea });
+    });
+
+    socket.on("syncBattleCards", ({ roomId, playerId, battleCards }) => {
+        socket.to(roomId).emit('opponentBattleArea', { playerId, battleCards });
+        console.log("syncBattleCards", battleCards)
+    })
+
+    socket.on("syncTrash", ({ roomId, playerId, trash }) => {
+        socket.to(roomId).emit('opponentTrash', { playerId, trash });
+        console.log("syncTrash", roomId, playerId, trash.length)
+    })
+    // socket.on('battleAreaUpdated', (battleArea) => {
+    //     console.log("battleAreaUpdated", battleArea)
+    // });
 
     socket.on('disconnect', () => {
         console.log('Jugador desconectado', socket.id);

@@ -41,7 +41,7 @@ export const initializeDeck = async (setDeck, setHand, setDeckInitialized) => {
         setHand(initialHand);
         setDeckInitialized(true);
 
-        return initialHand; // <-- Devuelve la mano directamente
+        return {initialHand,remainingDeck}; // <-- Devuelve la mano directamente
     } catch (error) {
         console.error("Error al inicializar el mazo:", error);
         return []; // Por si falla, que no pete
@@ -101,14 +101,19 @@ export const addResourceEx = (setResources)=> {
     setResources(prev => [...prev, { active: true, ex: true }]);
 }
 
-export const drawCard = (deck, setDeck, setHand, cuantiti) => {
-    const drawnCards = deck.slice(0, cuantiti); 
-    const remainingDeck = deck.slice(cuantiti);
-    setDeck(remainingDeck);
-    setHand((prevHand) => [...prevHand, ...drawnCards]); 
+export const drawCard = (deck, setDeck, setHand, quantity, handRef) => {
+    const drawnCards = deck.slice(0, quantity);
+    const remainingDeck = deck.slice(quantity);
 
-    // return { drawnCards, remainingDeck };
-}
+    setDeck(remainingDeck);
+    setHand((prevHand) => {
+        const updatedHand = [...prevHand, ...drawnCards];
+        handRef.current = updatedHand;
+        return updatedHand;
+    });
+
+    return { drawnCards, remainingDeck };
+};
 
 export const nextTurn = (setCurrentPlayer, players) => {
     setCurrentPlayer(prev => {
@@ -121,6 +126,48 @@ export const nextTurn = (setCurrentPlayer, players) => {
     });
 };
 
+export const onPlay = (card, hand, setHand, battleCards, setBattleCards) =>{
+    console.log("ID de la carta jugada:", card.card_type);
+    if (battleCards.length == 6) return; // no se puede jugar más cartas en batalla
+
+    if(card.card_type === "unit"){
+        const idx = hand.findIndex(c =>
+            c.id_coleccion === card.id_coleccion &&
+            c.id_carta    === card.id_carta
+        );
+        if (idx === -1) return; // no encontrada
+        
+        // 2) crear copia y eliminar sólo esa posición
+        const newHand = [...hand];
+        newHand.splice(idx, 1);
+        setHand(newHand);
+
+        const newBattle   = [...battleCards, card];
+        setBattleCards(newBattle);
+    }
+    else if(card.card_type === "command"){}
+    else if(card.card_type === "base"){}
+    else if(card.card_type === "pilot"){}
+
+
+
+}
+export const sendTrash = (card, hand, setHand, trash, setTrash) => {
+    console.log("ID de la carta enviada a la basura:", card);
+    const idx = hand.findIndex(c =>
+        c.id_coleccion === card.id_coleccion &&
+        c.id_carta    === card.id_carta
+    );
+      if (idx === -1) return; // no encontrada
+    
+      // 2) crear copia y eliminar sólo esa posición
+    const newHand = [...hand];
+    newHand.splice(idx, 1);
+    setHand(newHand);
+
+    const newTrash   = [...trash, card];
+    setTrash(newTrash);
+}
 export const nextPhase = (  
     hasRunSetup,
     setupPhaseIndex,

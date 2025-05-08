@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 
-export default function GraveyardZone({ trash }) {
+export default function GraveyardZoneRival({ trashRival }) {
     return (
         <div className="flex flex-col items-center col-span-2 p-4 space-y-4 border border-gray-500">
-            <h2 className="text-lg font-bold">Trash: {trash.length}</h2>
+            <h2 className="text-lg font-bold">Trash: {trashRival.length}</h2>
             <div className="w-24 h-32 border border-gray-500 border-dashed">
-                {Array.isArray(trash) && trash.length > 0 ? (
-                    trash.map((card, index) => (
+                {Array.isArray(trashRival) && trashRival.length > 0 ? (
+                    trashRival.map((card, index) => (
                         <div
                             key={`${card.id_carta}-${index}`}
                             className="absolute w-24 h-32"
@@ -26,6 +26,6 @@ export default function GraveyardZone({ trash }) {
     );
 }
 
-GraveyardZone.propTypes = {
-    trash: PropTypes.array.isRequired,
+GraveyardZoneRival.propTypes = {
+    trashRival: PropTypes.array.isRequired,
 };

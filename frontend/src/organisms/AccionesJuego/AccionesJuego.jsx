@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { addResource, removeExResource, addResourceEx, drawCard } from '../../utils/funcionesGame';
-const AccionesJuego = ({deck, setDeck, hand, setHand,shield, setShieldArea, myResources, setMyResources, endTurn}) =>{
+const AccionesJuego = ({deck, setDeck, hand, setHand,shield, setShieldArea, myResources, setMyResources, endTurn, handRef}) =>{
 
     const handleAddResourceEX = () => {
         addResourceEx(setMyResources); // Llama a la función para agregar un recurso
@@ -9,7 +9,7 @@ const AccionesJuego = ({deck, setDeck, hand, setHand,shield, setShieldArea, myRe
         removeExResource(setMyResources); // Llama a la función para agregar un recurso
     }
     const handleDrawCard = () => {
-        drawCard(deck, setDeck, setHand, 1); // Llama a la función para agregar un recurso
+        drawCard(deck, setDeck, setHand, 1, handRef); // Llama a la función para agregar un recurso
     }
     const handleEndTurn = () => {
         endTurn();
@@ -38,5 +38,6 @@ const AccionesJuego = ({deck, setDeck, hand, setHand,shield, setShieldArea, myRe
         myResources: PropTypes.array,
         setMyResources: PropTypes.func,
         endTurn: PropTypes.func,
+        handRef: PropTypes.object,
     };
     export default AccionesJuego;

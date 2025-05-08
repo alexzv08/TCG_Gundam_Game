@@ -3,7 +3,7 @@ import AccionesJuego from './AccionesJuego';
 import { useGame } from '../../context/GameContext';
 
 export default function AccionesJuegoContainer() {
-  const { deck, setDeck, hand, setHand, shields, setShieldArea, myResources, setMyResources, endTurn } = useGame();
+  const { deck, setDeck, hand, setHand, shields, setShieldArea, myResources, setMyResources, endTurn,handRef } = useGame();
 
   return (
     <AccionesJuego
@@ -16,6 +16,7 @@ export default function AccionesJuegoContainer() {
       myResources={myResources}
       setMyResources={setMyResources}
       endTurn={endTurn} 
+      handRef={handRef}
     />
   );
 }
