@@ -2,7 +2,7 @@ import BattleArea from './BattleArea';
 import { useGame } from '../../context/GameContext';
 
 export default function BattleAreaContainer() {
-    const { battleCards, addUnit, requestPilot, myResources, setMyResources } = useGame();
+    const { battleCards, addUnit, requestPilot, myResources, setMyResources, setSelectedCarta, setShowCartaModal,  flipCard, rotated } = useGame();
 
     const handleDrop = card => {
         if (card.card_type === 'unit') addUnit(card);
@@ -11,5 +11,5 @@ export default function BattleAreaContainer() {
         }
     };
 
-    return <BattleArea battleCards={battleCards} onDrop={handleDrop} myResources={myResources} setMyResources={setMyResources}/>;
+    return <BattleArea battleCards={battleCards} onDrop={handleDrop} myResources={myResources} setMyResources={setMyResources} setSelectedCarta={setSelectedCarta} setShowCartaModal={setShowCartaModal} flipCard={flipCard} rotated={rotated}/>;
 }

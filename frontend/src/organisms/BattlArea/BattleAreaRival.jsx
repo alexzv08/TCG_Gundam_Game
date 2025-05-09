@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-export default function BattleAreaRival({ battleCardsRival, onDrop, rivalResources, setRivalResources }) {
+export default function BattleAreaRival({ battleCardsRival, onDrop, rivalResources, setRivalResources, rotatedRival }) {
     const handleDrop = e => {
         e.preventDefault();
         const card = JSON.parse(e.dataTransfer.getData('text/plain'));
@@ -41,8 +41,12 @@ export default function BattleAreaRival({ battleCardsRival, onDrop, rivalResourc
                                 <img
                                     src={`/imgCards/${card.id_coleccion}-${card.id_carta}.webp`}
                                     alt={card.card_name}
-                                    className="object-cover w-full h-full rounded-md"
-                                />
+                                    className={`
+                                    object-cover w-full h-full rounded-md
+                                    transform transition-transform duration-300
+                                    ${rotatedRival[index] ? 'rotate-45 grayscale' : ''}
+                                    `}
+                                    />
                                 </div>
                             ) : (
                                 <span className="text-sm text-gray-400">Vacío</span>
@@ -60,4 +64,5 @@ BattleAreaRival.propTypes = {
     onDrop: PropTypes.func.isRequired,
     rivalResources: PropTypes.array,
     setRivalResources: PropTypes.func,
+    rotatedRival: PropTypes.object,
 };

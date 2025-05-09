@@ -70,6 +70,10 @@ export function GameProvider({ children }) {
         const [baseArea, setBaseArea] = useState([]);
         // datos de la zona de la base rival
         const [baseAreaRival, setBaseAreaRival] = useState([]);
+
+        const [rotated, setRotated] = useState({});
+        const [rotatedRival, setRotatedRival] = useState({});  // nuevas rotaciones del rival
+
         // datos de la zona de resources//energia
         const [myResources, setMyResources] = useState([]);
         const [rivalResources, setRivalResources] = useState([]);
@@ -147,11 +151,16 @@ export function GameProvider({ children }) {
             console.log("Basura rival:", trash);
             setTrashRival(trash);
         })
+        socket.on('opponentRotated', ({ playerId, rotated }) => {
+            console.log("Rotaciones rival:", rotated);
+            setRotatedRival(rotated);
+        });
         return () => {
         socket.off('salaCreada',    onSalaCreada);
         socket.off('salaEncontrada', onSalaEncontrada);
         socket.off('opponentHand');
         socket.off('opponentDeck');
+        socket.off('opponentRotated');
         };
     }, []);
 
@@ -362,6 +371,18 @@ export function GameProvider({ children }) {
     //     setHand(h => [...h, ...drawnCards]);
     //     deckRef.current = remainingDeck;
     // }
+    function flipCard(idx) {
+        setRotated(prev => {
+            const next = { ...prev, [idx]: !prev[idx] };
+            // sincronizamos por socket con todos en la sala
+            socket.emit('syncRotated', {
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),
+            rotated: next,
+            });
+            return next;
+        });
+    }
 
     return (
         <GameContext.Provider value={{
@@ -391,6 +412,10 @@ export function GameProvider({ children }) {
                 setBaseArea,
                 baseAreaRival,
                 setBaseAreaRival,
+                rotated,
+                setRotated,
+                rotatedRival,
+                setRotatedRival,
                 myResources,
                 setMyResources,
                 rivalResources,
@@ -421,7 +446,8 @@ export function GameProvider({ children }) {
                 buscarSala,
                 endTurn,
                 syncDeck, 
-                syncHand
+                syncHand,
+                flipCard
         }}>
         {children}
         </GameContext.Provider>

@@ -2,7 +2,7 @@ import BattleArea from './BattleAreaRival';
 import { useGame } from '../../context/GameContext';
 
 export default function BattleAreaRivalContainer() {
-    const { battleCardsRival = [], addUnit, requestPilot, rivalResources, setRivalResources } = useGame();
+    const { battleCardsRival = [], addUnit, requestPilot, rivalResources, setRivalResources, rotatedRival } = useGame();
 
     const handleDrop = card => {
         if (card.card_type === 'unit') addUnit(card);
@@ -11,5 +11,5 @@ export default function BattleAreaRivalContainer() {
         }
     };
 
-    return <BattleArea battleCardsRival={battleCardsRival} onDrop={handleDrop} rivalResources={rivalResources} setRivalResources={setRivalResources}/>;
+    return <BattleArea battleCardsRival={battleCardsRival} onDrop={handleDrop} rivalResources={rivalResources} setRivalResources={setRivalResources} rotatedRival={rotatedRival}/>;
 }

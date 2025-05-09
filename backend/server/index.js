@@ -147,6 +147,10 @@ io.on('connection', (socket) => {
         socket.to(roomId).emit('opponentTrash', { playerId, trash });
         console.log("syncTrash", roomId, playerId, trash.length)
     })
+    socket.on('syncRotated', ({ roomId, playerId, rotated }) => {
+        console.log("syncRotated", roomId, playerId, rotated)
+        socket.to(roomId).emit('opponentRotated', { playerId, rotated });
+    });
     // socket.on('battleAreaUpdated', (battleArea) => {
     //     console.log("battleAreaUpdated", battleArea)
     // });
