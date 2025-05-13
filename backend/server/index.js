@@ -18,7 +18,7 @@ const app = express();
 
 // app.use(cors());
 app.use(cors({
-    origin: 'https://tcg-gundam-game-1.onrender.com',
+    origin: '*',
     methods: ['GET', 'POST'],
     credentials: true
 }));
@@ -32,7 +32,7 @@ const server = http.createServer(app);
 // Configurar Socket.IO en el servidor
 const io = new Server(server, {
     cors: {
-        origin: "https://tcg-gundam-game-1.onrender.com",
+        origin: "*",
         methods: ["GET", "POST"],
         credentials: true,
     }
@@ -43,7 +43,7 @@ const io = new Server(server, {
 //         methods: ["GET", "POST"]
 //     }
 // });
-app.use(express.json()); // Para parsear JSON en las peticiones
+// app.use(express.json()); // Para parsear JSON en las peticiones
 
 // Rutas get API
 app.get('/', (req, res) => {
