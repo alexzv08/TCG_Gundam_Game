@@ -27,7 +27,7 @@ import { useState } from "react";
 
         try {
             const token = localStorage.getItem("token")
-            const response = await fetch('http://192.168.1.136:5000/api/guardar-mazo', {
+            const response = await fetch(import.meta.env.VITE_BACKEND_URL+'/api/guardar-mazo', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

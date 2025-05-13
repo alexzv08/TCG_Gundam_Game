@@ -2,7 +2,7 @@
 export const obtenerCartas = async () => {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch('http://192.168.1.136:5000/api/cartas',{
+        const response = await fetch(import.meta.env.VITE_BACKEND_URL+'/api/cartas',{
 
     }); // Ajusta la URL si es necesario
         const data = await response.json();

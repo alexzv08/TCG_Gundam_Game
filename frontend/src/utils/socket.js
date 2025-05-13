@@ -1,6 +1,6 @@
 // src/utils/socket.js
 import { io } from 'socket.io-client';
-const socket = io('http://192.168.1.136:5000', {
+const socket = io(import.meta.env.VITE_BACKEND_URL, {
     autoConnect: false,
 });
 export default socket;

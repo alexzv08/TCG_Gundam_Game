@@ -29,7 +29,7 @@ export const drawInitialHand = (deck) => {
 // Inicializar el mazo
 export const initializeDeck = async (setDeck, setHand, setDeckInitialized) => {
     try {
-        const response = await fetch("http://192.168.1.136:5000/api/recuperarMazo");
+        const response = await fetch(import.meta.env.VITE_BACKEND_URL+"/api/recuperarMazo");
         const data = await response.json();
 
         let generatedDeck = buildDeck(data[0]);
@@ -77,7 +77,7 @@ export const shieldRemove = (setShieldArea, setDeck, currentDeck) => {
 
 export const baseTokenAdd = async(setBaseArea) =>{
     try {
-        const response = await fetch("http://192.168.1.136:5000/api/recuperarBaseToken");
+        const response = await fetch(import.meta.env.VITE_BACKEND_URL+"/api/recuperarBaseToken");
         const data = await response.json();
         setBaseArea(data[0])
     } catch (error) {
