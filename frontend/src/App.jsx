@@ -12,6 +12,7 @@ import Prueba from "./pages/Prueba";
 // const socket = io('http://localhost:5000'); // Cambia esto si usas un dominio o puerto diferente
 
 const App = () => {
+  console.log("BACKEND URL:", import.meta.env.VITE_BACKEND_URL);
   return (
     <Router>
       <div className="min-h-screen bg-[#141718]">
