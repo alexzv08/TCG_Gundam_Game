@@ -54,4 +54,5 @@ Hand.propTypes = {
     sendTrash: PropTypes.func.isRequired,
     setSelectedCarta: PropTypes.func,
     setShowCartaModal: PropTypes.func,
+    currentPlayer: PropTypes.string,
 };

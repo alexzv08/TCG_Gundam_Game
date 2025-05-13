@@ -7,6 +7,7 @@ export default function HandContainer() {
         battleCards,
         setHand,
         setBattleCards,
+        currentPlayer,
         roomId,
         playerId,
         trash,
@@ -18,15 +19,14 @@ export default function HandContainer() {
         e.dataTransfer.setData('text/plain', JSON.stringify(card));
     };
     const handlePlay = card => {
-        console.log("ID de la carta:", card.id_carta);
+        console.log("ID de la carta:", currentPlayer);
         onPlay(
             card,
             hand,
             setHand,
             battleCards,
             setBattleCards,
-            roomId,
-            playerId
+            currentPlayer
         );
     };
     const handleTrash = card => {

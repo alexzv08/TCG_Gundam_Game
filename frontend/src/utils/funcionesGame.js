@@ -126,8 +126,12 @@ export const nextTurn = (setCurrentPlayer, players) => {
     });
 };
 
-export const onPlay = (card, hand, setHand, battleCards, setBattleCards) =>{
+export const onPlay = (card, hand, setHand, battleCards, setBattleCards, currentPlayer) =>{
     console.log("ID de la carta jugada:", card.card_type);
+    if (currentPlayer !== localStorage.getItem("user")) {
+        alert("No es tu turno");
+        return
+    }; // no es tu turno
     if (battleCards.length == 6) return; // no se puede jugar más cartas en batalla
 
     if(card.card_type === "unit"){

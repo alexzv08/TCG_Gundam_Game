@@ -106,6 +106,7 @@ export function GameProvider({ children }) {
     const onSalaCreada = room => console.log('Sala creada:', room);
     const onSalaEncontrada = (room,startPlayer) => {
         roomIdRef.current = room.id;
+        console.log('Jugador que sale:', startPlayer)
         setPlayers(room.players);
         setCurrentPlayer(startPlayer);
         setTurnCount(1);
