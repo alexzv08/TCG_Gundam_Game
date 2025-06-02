@@ -4,7 +4,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Tablero from "./templates/Tablero"
 import Prueba from "./pages/Prueba";
-
+import Pruebas from "./pages/Pruebas";
+import AdminPanel from './pages/AdminPanel';
 // import { useEffect, useState } from 'react';
 // import { io } from 'socket.io-client';
 
@@ -23,7 +24,8 @@ const App = () => {
             <Route path="/home" element={<CreateDeck />} /> {/* Ruta para crear mazo */}
             <Route path="/prueba" element={<Prueba />} /> {/* Ruta para crear mazo */}
             <Route path="/tablero" element={<Tablero />} /> {/* Ruta para crear mazo */}
-
+            <Route path="/pruebas" element={<Pruebas />} /> {/* Ruta para crear mazo */}
+            <Route path="/admin" element={<AdminPanel />} />
 
           </Routes>
         </main>

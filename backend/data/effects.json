@@ -1,0 +1,18 @@
+[
+  {
+    "card_id": "001",
+    "effects": [
+      {
+        "triggers": [
+          "DURING_PAIR"
+        ],
+        "action": "BOOST_AP",
+        "params": {
+          "amount": 1,
+          "target": "ALL_FRIENDLY_UNITS"
+        },
+        "effect_id": "effect_1748804647974"
+      }
+    ]
+  }
+]
