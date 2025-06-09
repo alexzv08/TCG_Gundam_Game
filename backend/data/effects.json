@@ -1,6 +1,6 @@
 [
   {
-    "card_id": "001",
+    "card_id": "ST1-001",
     "effects": [
       {
         "triggers": [
@@ -12,6 +12,189 @@
           "target": "ALL_FRIENDLY_UNITS"
         },
         "effect_id": "effect_1748804647974"
+      },
+      {
+        "triggers": [
+          "END_OF_TURN"
+        ],
+        "action": "REPAIR",
+        "params": {
+          "amount": 2
+        },
+        "effect_id": "effect_1748859775211"
+      }
+    ]
+  },
+  {
+    "card_id": "ST1-002",
+    "effects": [
+      {
+        "triggers": [
+          "WHEN_PAIRED"
+        ],
+        "action": "LINK",
+        "params": {
+          "linkType": "TRAIT",
+          "linkValue": "(White Base Team)",
+          "linkEffect": "DRAW_CARD",
+          "linkBonus": "",
+          "drawAmount": 1
+        },
+        "effect_id": "effect_1748868509811"
+      }
+    ]
+  },
+  {
+    "card_id": "ST1-008",
+    "effects": [
+      {
+        "triggers": [
+          "OPPONENT_ATTACK"
+        ],
+        "action": "BLOCKER",
+        "params": {},
+        "effect_id": "effect_1748879791705"
+      }
+    ]
+  },
+  {
+    "card_id": "GD01-004",
+    "effects": [
+      {
+        "triggers": [
+          "END_OF_TURN"
+        ],
+        "action": "REPAIR",
+        "params": {
+          "amount": 1
+        },
+        "effect_id": "effect_1748945417696"
+      }
+    ]
+  },
+  {
+    "card_id": "GD01-009",
+    "effects": [
+      {
+        "triggers": [
+          "DEPLOY"
+        ],
+        "action": "MULTIPLE",
+        "params": {},
+        "subactions": [
+          {
+            "action": "SELECT_UNIT",
+            "params": {
+              "targetType": "ALLY",
+              "trait": "(White Base Team)",
+              "subeffect": "ADD_KEYWORD",
+              "keyword": "HIGH_MANEUVER"
+            }
+          }
+        ],
+        "effect_id": "effect_1749023091008"
+      }
+    ]
+  },
+  {
+    "card_id": "ST1-010",
+    "effects": [
+      {
+        "triggers": [
+          "WHEN_PAIRED"
+        ],
+        "action": "MULTIPLE",
+        "params": {},
+        "subactions": [
+          {
+            "action": "SELECT_UNIT",
+            "params": {
+              "targetType": "ENEMY",
+              "hpFilter": "<=3",
+              "subeffect": "REST"
+            }
+          }
+        ],
+        "effect_id": "effect_1749023307783"
+      }
+    ]
+  },
+  {
+    "card_id": "GD01-010",
+    "effects": [
+      {
+        "triggers": [
+          "WHEN_PAIRED"
+        ],
+        "action": "MULTIPLE",
+        "params": {},
+        "subactions": [
+          {
+            "action": "SELECT_UNIT",
+            "params": {
+              "targetType": "ENEMY",
+              "hpFilter": "<=3",
+              "subeffect": "REST"
+            }
+          }
+        ],
+        "effect_id": "effect_1749024058746"
+      }
+    ]
+  },
+  {
+    "card_id": "GD01-006",
+    "effects": [
+      {
+        "triggers": [
+          "END_OF_TURN"
+        ],
+        "action": "REPAIR",
+        "params": {
+          "amount": 1
+        },
+        "effect_id": "effect_1749024200838"
+      },
+      {
+        "triggers": [
+          "WHEN_PAIRED"
+        ],
+        "action": "LINK",
+        "params": {
+          "linkType": "TRAIT",
+          "linkValue": "(Earth Federation)",
+          "linkEffect": "BOOST_STATS",
+          "linkBonus": "",
+          "bonusHP": 1
+        },
+        "effect_id": "effect_1749024241520"
+      }
+    ]
+  },
+  {
+    "card_id": "GD01-007",
+    "effects": [
+      {
+        "triggers": [
+          "DESTROYED"
+        ],
+        "action": "CONDITIONAL",
+        "params": {
+          "condition": {
+            "type": "HAS_UNIT_IN_PLAY",
+            "filters": {
+              "owner": "self",
+              "trait": "(OZ)"
+            }
+          },
+          "subeffect": {
+            "action": "DRAW",
+            "params": {
+              "amount": 1
+            }
+          }
+        },
+        "effect_id": "effect_1749033460376"
       }
     ]
   }

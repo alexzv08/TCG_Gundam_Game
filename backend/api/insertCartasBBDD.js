@@ -37,17 +37,21 @@ router.get('/cards', async (req, res) => {
         const cards = await readJsonFile(cardsPath);
         const effects = await readJsonFile(effectsPath);
 
-        // Crear un mapa de efectos por ID de carta
-        const effectsByCardId = {};
+        // Crear un mapa de efectos usando la clave única: id_coleccion-id_carta
+        const effectsByCardKey = {};
         effects.forEach(item => {
-            effectsByCardId[item.card_id] = item.effects;
+            // item.card_id ya es la clave única (por ejemplo: "1-1")
+            effectsByCardKey[item.card_id] = item.effects;
         });
 
-        // Añadir efectos a cada carta
-        const cardsWithEffects = cards.map(card => ({
-            ...card,
-            effects: effectsByCardId[card.id_carta] || []
-        }));
+        // Añadir efectos a cada carta usando la misma clave
+        const cardsWithEffects = cards.map(card => {
+            const key = `${card.id_coleccion}-${card.id_carta}`;
+            return {
+                ...card,
+                effects: effectsByCardKey[key] || []
+            };
+        });
 
         res.json(cardsWithEffects);
     } catch (error) {
@@ -55,6 +59,7 @@ router.get('/cards', async (req, res) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
 
 // POST crear nueva carta
 router.post('/cards', async (req, res) => {
