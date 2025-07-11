@@ -23,7 +23,7 @@ export default function Hand({ hand, onDragStart, onPlay, sendTrash, setSelected
                         >
                             <div className='absolute w-24 top-[-20px] flex justify-center gap-2 opacity-0 group-hover:opacity-100'>
                                 <button className='w-8 h-8 bg-white rounded-xl' onClick={() => onPlay(card)}><img src={a} alt="play" className=''/></button>  {/* Jugar la carta */}
-                                <button className='w-8 h-8 bg-white rounded-xl' onClick={() => sendTrash(card)}><img src={b} alt="discart" className=''/></button>  {/* Descartar */}
+                                {/* <button className='w-8 h-8 bg-white rounded-xl' onClick={() => sendTrash(card)}><img src={b} alt="discart" className=''/></button>  Descartar */}
                                 <button className='w-8 h-8 bg-white rounded-xl' onClick={() => handleOpen(card)}><img src={c} alt="show" className=''/></button>  {/* Mostrar en grande */}
                             </div>
                             <img
@@ -55,4 +55,6 @@ Hand.propTypes = {
     setSelectedCarta: PropTypes.func,
     setShowCartaModal: PropTypes.func,
     currentPlayer: PropTypes.string,
+    setMyResources: PropTypes.func,
+    myResources: PropTypes.array,
 };

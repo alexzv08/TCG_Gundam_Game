@@ -126,15 +126,29 @@ export const nextTurn = (setCurrentPlayer, players) => {
     });
 };
 
-export const onPlay = (card, hand, setHand, battleCards, setBattleCards, currentPlayer) =>{
-    console.log("ID de la carta jugada:", card.card_type);
+export const onPlay = (card, hand, setHand, battleCards, setBattleCards, currentPlayer, setMyResources, myResources) =>{
+    console.log("ID de la carta jugada:", card);
+
+    // 1) Comprobar si es tu turno para jugar cartas
     if (currentPlayer !== localStorage.getItem("user")) {
         alert("No es tu turno");
         return
     }; // no es tu turno
-    if (battleCards.length == 6) return; // no se puede jugar más cartas en batalla
-
+    
+    // 2) Comprobar si la carta es de tipo unidad, comando, base o piloto
     if(card.card_type === "unit"){
+        console.log("Mis recursos: ", myResources.length);
+        // 2.1) Comprobar si la carta es jugable, tanto si se dispone del nivel para jugar como de los recursos necesarios
+        if(card.level > myResources.length) {
+            alert("Nivel insuficiente para jugar esta carta");
+            return
+        }
+        if(card.cost > myResources.filter(r => r.active).length) {
+            alert("Recursos insuficientes para jugar esta carta");
+            return
+        } // no se puede jugar por falta de recursos
+        // 2.2) Comprobar si hay espacio en la batalla
+        if (battleCards.length == 6) return; // no se puede jugar más cartas en batalla
         const idx = hand.findIndex(c =>
             c.id_coleccion === card.id_coleccion &&
             c.id_carta    === card.id_carta
@@ -148,6 +162,12 @@ export const onPlay = (card, hand, setHand, battleCards, setBattleCards, current
 
         const newBattle   = [...battleCards, card];
         setBattleCards(newBattle);
+
+        // 3) Actualizar recursos
+        const newResources = [...myResources];
+
+        gastarRecursos(card.cost, newResources, setMyResources);
+
     }
     else if(card.card_type === "command"){}
     else if(card.card_type === "base"){}
@@ -201,4 +221,26 @@ export const nextPhase = (
             nextTurn();
         }
     }
+}
+
+function gastarRecursos(coste, myResources, setMyResources) {
+    const result = [...myResources];
+
+    // Paso 1: desactivar recursos normales activos
+    for (let i = 0; i < result.length && coste > 0; i++) {
+        if (!result[i].ex && result[i].active) {
+        result[i].active = false;
+        coste--;
+        }
+    }
+
+    // Paso 2: eliminar recursos ex si aún queda coste
+    for (let i = result.length - 1; i >= 0 && coste > 0; i--) {
+        if (result[i].ex) {
+        result.splice(i, 1);
+        coste--;
+        }
+    }
+    console.log("Recursos después de gastar:", result);
+    setMyResources(result);
 }

@@ -62,7 +62,7 @@ router.post("/register", async (req, res) => {
         const passwordCifrada = await cifrarPassword(password);
 
         const query = `INSERT INTO usuarios (usuario, password, email, fechaCreacion, id_rol) VALUES (?, ?, ?, NOW(), ?)`;
-        const values = [usuario, passwordCifrada, email, 2]; // 2 puede ser un rol por defecto
+        const values = [usuario, passwordCifrada, email, 4]; // 2 puede ser un rol por defecto
 
         const [result] = await db.query(query, values);
         console.log("Usuario guardado exitosamente.");

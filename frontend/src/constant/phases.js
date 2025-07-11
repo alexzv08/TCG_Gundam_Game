@@ -13,6 +13,6 @@ export const PHASES = [
     'DRAW_PHASE',
     'RESOURCE_PHASE',
     'MAIN_PHASE',
-    'ACTION_END_PHASE',
+    // 'ACTION_END_PHASE',
     'END_PHASE',
 ];

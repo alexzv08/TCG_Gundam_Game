@@ -97,73 +97,64 @@ io.on('connection', (socket) => {
         console.log(socket.rooms)
     })
 
-    socket.on("decidirMulligan", ({ roomId, playerId, decision }) => {
-        if (!playersReady[roomId]) {
-            playersReady[roomId] = {};
-        }
-        console.log("decidirMulligan", roomId)
-        console.log("playerId", playerId)
-        console.log("decision", decision)
-        playersReady[roomId][playerId] = decision;
+    // socket.on("decidirMulligan", ({ roomId, playerId, decision }) => {
+    //     if (!playersReady[roomId]) {
+    //         playersReady[roomId] = {};
+    //     }
+    //     console.log("decidirMulligan", roomId)
+    //     console.log("playerId", playerId)
+    //     console.log("decision", decision)
+    //     playersReady[roomId][playerId] = decision;
 
-        // Si ambos jugadores han decidido, avanzar
-        if (Object.keys(playersReady[roomId]).length === 2) {
-            console.log("Ambos jugadores han decidido")
-            io.to(roomId).emit("mulliganFinalizado", playersReady[roomId]);
-            delete playersReady[roomId]; // Limpiar estado para la siguiente fase
-        }
-    });
+    //     // Si ambos jugadores han decidido, avanzar
+    //     if (Object.keys(playersReady[roomId]).length === 2) {
+    //         console.log("Ambos jugadores han decidido")
+    //         io.to(roomId).emit("actualizarMulligan", playersReady[roomId]);
+    //         delete playersReady[roomId]; // Limpiar estado para la siguiente fase
+    //     }
+    // });
 
+    socket.on("confirmarMulligan", ({ roomId, playerId }) => {
+        console.log("actualizarMulliganRival", roomId, playerId)
+        io.to(roomId).emit("actualizarMulligan", { playerId });
+    })
 
     socket.on("startTurn", ({ roomId, currentPlayer }) => {
-        if (!rooms[roomId]) {
-            rooms[roomId] = { turnStarted: false };
-        }
-
-        if (!rooms[roomId].turnStarted) {
-            rooms[roomId].turnStarted = true;
-            io.in(roomId).emit("turnoComenzado", currentPlayer);
-        }
+        console.log("startTurn", roomId, currentPlayer);
+        // Reenvía a todos los jugadores (menos al que emitió)
+        socket.to(roomId).emit("startTurn", { currentPlayer });
     });
 
     socket.on('syncHand', ({ roomId, playerId, hand }) => {
         // Reenvía a todos menos al emisor
-        console.log("syncHand", roomId, playerId)
         socket.to(roomId).emit('opponentHand', { playerId, hand });
     });
     socket.on('syncDeck', ({ roomId, playerId, deck }) => {
         // Reenvía a todos menos al emisor
-        console.log("syncDeck", roomId, playerId, deck.length)
         socket.to(roomId).emit('opponentDeck', { playerId, deck });
     })
     socket.on('syncShields', ({ roomId, playerId, shields }) => {
         // Reenvía a todos menos al emisor
-        console.log("syncShields", roomId, playerId, shields.length)
         socket.to(roomId).emit('opponentShields', { playerId, shields });
     });
     socket.on('syncResources', ({ roomId, playerId, resources }) => {
         // Reenvía a todos menos al emisor
-        console.log("syncResources", roomId, playerId, resources.length)
         socket.to(roomId).emit('opponentResources', { playerId, resources });
     });
 
     socket.on('syncBaseArea', ({ roomId, playerId, baseArea }) => {
         // Reenvía a todos menos al emisor
-        console.log("syncBaseArea", roomId, playerId, baseArea)
         socket.to(roomId).emit('opponentBaseArea', { playerId, baseArea });
     });
 
     socket.on("syncBattleCards", ({ roomId, playerId, battleCards }) => {
         socket.to(roomId).emit('opponentBattleArea', { playerId, battleCards });
-        console.log("syncBattleCards", battleCards)
     })
 
     socket.on("syncTrash", ({ roomId, playerId, trash }) => {
         socket.to(roomId).emit('opponentTrash', { playerId, trash });
-        console.log("syncTrash", roomId, playerId, trash.length)
     })
     socket.on('syncRotated', ({ roomId, playerId, rotated }) => {
-        console.log("syncRotated", roomId, playerId, rotated)
         socket.to(roomId).emit('opponentRotated', { playerId, rotated });
     });
     // socket.on('battleAreaUpdated', (battleArea) => {

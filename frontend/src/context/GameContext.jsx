@@ -26,6 +26,8 @@ export function GameProvider({ children }) {
         const [currentPlayer, setCurrentPlayer] = useState(null);   // "player1" o "player2"
         const [turnCount, setTurnCount]         = useState(0);      // número de turnos transcurridos
         const [players, setPlayers]         = useState([]);      // jugadores en la sala
+        const [hasConfirmedMulligan, setHasConfirmedMulligan] = useState(false);
+        const [opponentConfirmedMulligan, setOpponentConfirmedMulligan] = useState(false);
 
         // --- State game phase ---
         const [hasRunSetup, setHasRunSetup] = useState(false);
@@ -106,7 +108,6 @@ export function GameProvider({ children }) {
     const onSalaCreada = room => console.log('Sala creada:', room);
     const onSalaEncontrada = (room,startPlayer) => {
         roomIdRef.current = room.id;
-        console.log('Jugador que sale:', startPlayer)
         setPlayers(room.players);
         setCurrentPlayer(startPlayer);
         setTurnCount(1);
@@ -115,7 +116,6 @@ export function GameProvider({ children }) {
     };
 
     useEffect(() => {
-        console.log("Fase actualizada a:", currentPhase);
         const handler = phaseHandlers[currentPhase];
         if (handler) handler();
     }, [currentPhase]);
@@ -126,42 +126,54 @@ export function GameProvider({ children }) {
         socket.once('salaCreada',    onSalaCreada);
         socket.once('salaEncontrada', onSalaEncontrada);
         socket.on('opponentHand', ({ playerId, hand }) => {
+            console.log('opponentHand', playerId, hand);
             setHandRival(hand);
+            handRival.current = hand; // Actualiza la ref de la mano rival
         });
         socket.on('opponentDeck', ({ playerId, deck }) => {
-            console.log("Mazo rival:", deck);
             setDeckRival(deck);
         });
         socket.on("opponentShields", ({ playerId, shields }) => {
-            console.log("Escudos rival:", shields);
             setShieldsRival(shields);
         })
         socket.on("opponentResources", ({ playerId, resources }) => {
-            console.log("Recursos rival:", resources);
             setRivalResources(resources);
         })
         socket.on("opponentBaseArea", ({ playerId, baseArea }) => {
-            console.log("Base rival:", baseArea);
             setBaseAreaRival(baseArea);
         })
         socket.on("opponentBattleArea", ({ playerId, battleCards }) => {
             setBattleCardsRival(battleCards);
-            console.log("Cartas de batalla rival:", battleCards);
         })
         socket.on("opponentTrash", ({ playerId, trash }) => {
-            console.log("Basura rival:", trash);
             setTrashRival(trash);
         })
         socket.on('opponentRotated', ({ playerId, rotated }) => {
-            console.log("Rotaciones rival:", rotated);
             setRotatedRival(rotated);
         });
+
+        socket.on("actualizarMulligan", ({ playerId }) => {
+            const myId = localStorage.getItem("user");
+            if (playerId === myId) {
+                setHasConfirmedMulligan(true);
+            } else {
+                setOpponentConfirmedMulligan(true);
+            }
+        });
+
+        // socket.on('turnoComenzado', ({ currentPlayer }) => {
+        //     setCurrentPlayer(currentPlayer);
+        //     setTurnPhaseIndex(PHASES.indexOf('DRAW_PHASE'));
+        //     console.log(`Es el turno de: ${currentPlayer}`);
+        // })
         return () => {
         socket.off('salaCreada',    onSalaCreada);
         socket.off('salaEncontrada', onSalaEncontrada);
         socket.off('opponentHand');
         socket.off('opponentDeck');
         socket.off('opponentRotated');
+        socket.off("actualizarMulligan")
+        socket.off('startTurn');
         };
     }, []);
 
@@ -181,22 +193,26 @@ export function GameProvider({ children }) {
     }
     // — Funcion para finalizar el turno —
     function endTurn() {
-    changeTurn();
-    if (hasRunSetup) {
-        setTurnPhaseIndex(PHASES.indexOf('DRAW_PHASE'));
+        changeTurn(); // Cambia el jugador y resetea la fase a 0
+
+        if (hasRunSetup) {
+            setTurnPhaseIndex(PHASES.indexOf('DRAW_PHASE'));
+        }
+
+        const nextPlayer = players[(players.indexOf(currentPlayer) + 1) % players.length];
+
+        socket.emit('startTurn', {
+            roomId: roomIdRef.current,
+            currentPlayer: nextPlayer,
+        });
     }
-    // socket.emit('startTurn', {
-    //     roomId: roomIdRef.current,
-    //     currentPlayer: players[(players.indexOf(currentPlayer) + 1) % players.length]
-    // });
-    }
+
 
     // — Acciones para el ciclo de juego // Gestion automatica de acciones por fases de la partida —
     const phaseHandlers = {
         SETUP_DECK: async () => {
             // Inicializa el mazo y lo guarda en la ref
             const mano = await initializeDeck(setDeck, setHand, setDeckInitialized);
-            console.log("Mano inicial:", mano["initialHand"]);
             handRef.current = mano["initialHand"];
             deckRef.current = mano["remainingDeck"];
 
@@ -207,7 +223,6 @@ export function GameProvider({ children }) {
         },
         MULLIGAN: () => {
             const manoActual = handRef.current;
-            console.log("Mano inicial:", manoActual); 
             setShowModalAcciones(true);
             setConfigModalModalAcciones({
                 title: "Quieres hacer mulligan?",
@@ -223,14 +238,21 @@ export function GameProvider({ children }) {
                         syncHand();
                         syncDeck();
                         setShowModalAcciones(false);
-                        setSetupPhaseIndex(i => i + 1); 
+
+                        actualizarMulligan();
+                        setShowModal(true)
+                        setModalConfig(cfg => ({ ...cfg, title: 'Esperando mulligan del rival' }));
+
                         }, 
                         style: 'bg-green-500 text-white' 
                     },
                     { 
                         label: 'Cancelar', onClick: () => {
                         setShowModalAcciones(false);
-                        setSetupPhaseIndex(i => i + 1); 
+                        actualizarMulligan();
+                        setShowModal(true)
+                        setModalConfig(cfg => ({ ...cfg, title: 'Esperando mulligan del rival' }));
+                        
                         },
                         style: 'bg-red-500 text-white' 
                     },
@@ -316,12 +338,51 @@ export function GameProvider({ children }) {
     useEffect(() => {
         syncTrash()
     }, [trash]);
+
+    useEffect(() => {
+        if (hasConfirmedMulligan && !opponentConfirmedMulligan) {
+            setModalConfig({ title: "Esperando mulligan del rival" });
+            setShowModal(true);
+        } else if (hasConfirmedMulligan && opponentConfirmedMulligan) {
+            setShowModal(false);
+            setSetupPhaseIndex(i => i + 1); 
+        }
+    }, [hasConfirmedMulligan, opponentConfirmedMulligan]);
+
+    useEffect(() => {
+        socket.on('startTurn', ({ currentPlayer }) => {
+            setCurrentPlayer(currentPlayer);
+
+            // Si ya se ha hecho el setup, comienza desde la fase de robo
+            if (hasRunSetup) {
+                setTurnPhaseIndex(PHASES.indexOf('DRAW_PHASE'));
+            } else {
+                // Si no, aún estás en las fases de setup
+                setTurnPhaseIndex(0); // O la que corresponda en PHASES_SETUP
+            }
+
+            // También puedes gestionar si el turno es tuyo
+            if (currentPlayer === localStorage.getItem('user')) {
+                setIsMyTurn(true);
+            } else {
+                setIsMyTurn(false);
+            }
+            // Incrementa el contador de turnos
+            setTurnCount(tc => tc + 1);
+            console.log(`Nuevo turno de: ${currentPlayer}`);
+        });
+
+        return () => {
+            socket.off('startTurn');
+        };
+    }, [hasRunSetup, currentPlayer]);
+
     // — Funciones para sincronizar datos al rival —
     function syncHand() {
         socket.emit('syncHand', {
             roomId: roomIdRef.current,
             playerId: localStorage.getItem('user'),
-            hand: handRef.current,
+            hand: hand,
         });
     }
     function syncDeck() {
@@ -366,6 +427,12 @@ export function GameProvider({ children }) {
             trash: trash,
         });
     }
+    function actualizarMulligan() {
+        socket.emit("confirmarMulligan", { 
+            roomId: roomIdRef.current,
+            playerId: localStorage.getItem('user'),});
+        setHasConfirmedMulligan(true);
+    }
     // — Otras acciones (draw, play, etc.) …
     // function drawOne() {
     //     const { drawnCards, remainingDeck } = drawCard(deckRef.current, 1);
@@ -397,6 +464,7 @@ export function GameProvider({ children }) {
                 handRival,
                 setHandRival,
                 handRef,
+                handRivalRef,
                 battleCards,
                 setBattleCards,
                 battleCardsRival,

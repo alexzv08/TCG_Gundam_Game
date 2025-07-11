@@ -43,15 +43,15 @@ export default function Prueba() {
         setIsLoading(true);
         setModalConfig(cfg => ({ ...cfg, title: 'Buscando partida...' }));
         buscarSala(localStorage.getItem('user'));
-        console.log("Cliente emite buscarSala"); 
     };
 
     return (
         <main className="relative w-full h-screen">
-            <div className='absolute inset-0 flex items-center justify-center w-1/6 h-12 gap-2 m-auto text-white bg-blue-500'>
-                <div>Turno de: <b>{currentPlayer}</b> // </div>
+            <div className={`absolute inset-0 flex items-center justify-center w-1/6 h-12 gap-2 m-auto text-white ${currentPlayer === localStorage.getItem("user") ? 'bg-blue-500' : 'bg-red-500'}`}>
+                <div>Turno de: <b>{currentPlayer}</b> //</div>
                 <div>Turno: <b>{turnCount}</b></div>
             </div>
+
             <Modal
                 show={showModal}
                 title={modalConfig.title}

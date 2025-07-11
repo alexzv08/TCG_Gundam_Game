@@ -12,6 +12,8 @@ export default function HandContainer() {
         playerId,
         trash,
         setTrash,
+        myResources,
+        setMyResources,
         setSelectedCarta, 
         setShowCartaModal } = useGame();
 
@@ -26,7 +28,9 @@ export default function HandContainer() {
             setHand,
             battleCards,
             setBattleCards,
-            currentPlayer
+            currentPlayer,
+            setMyResources,
+            myResources
         );
     };
     const handleTrash = card => {
@@ -42,5 +46,5 @@ export default function HandContainer() {
         );
     }
 
-    return <Hand hand={hand} onPlay={handlePlay} sendTrash={handleTrash} onDragStart={handleDragStart} setSelectedCarta={setSelectedCarta} setShowCartaModal={setShowCartaModal}/>;
+    return <Hand hand={hand} onPlay={handlePlay} sendTrash={handleTrash} onDragStart={handleDragStart} setSelectedCarta={setSelectedCarta} setShowCartaModal={setShowCartaModal} myResources={myResources} setMyResources={setMyResources} />;
 }

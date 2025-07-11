@@ -8,7 +8,9 @@ const CartaModal = ({ showCartaModal, setShowCartaModal, close, selectedCarta })
         setShowCartaModal(false);
     };
     return (
-        <div className="absolute inset-0 top-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]">
+        <div className="absolute inset-0 top-0 flex items-center justify-center bg-black bg-opacity-50 z-[9999]"
+            onClick={handleClose}
+        >
         <div className="flex flex-col items-center">
             <h2 className="mb-2 text-2xl font-bold text-white">{selectedCarta.card_name}</h2>
             <img

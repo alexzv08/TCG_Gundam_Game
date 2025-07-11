@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-export default function HandRival({ handRival, onDragStart }) {
+export default function HandRival({ handRival, handRivalRef, onDragStart }) {
     return (
         <div className="bg-opacity-25 absolute left-0 right-0 mx-auto -bottom-0 h-[140px] w-[67%] flex items-center justify-center bg-black gap-5">
             {Array.isArray(handRival) && handRival.length > 0 ? (
@@ -27,7 +27,7 @@ export default function HandRival({ handRival, onDragStart }) {
                     </div>
                 ))
             ) : (
-                <p>0 Cartas en mano: {handRival}</p>
+                <p>0 Cartas en mano: {handRivalRef}</p>
             )}
         </div>
     );
@@ -35,5 +35,6 @@ export default function HandRival({ handRival, onDragStart }) {
 
 HandRival.propTypes = {
     handRival: PropTypes.array,
+    handRivalRef: PropTypes.object,
     onDragStart: PropTypes.func,
 };
