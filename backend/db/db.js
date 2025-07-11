@@ -6,7 +6,10 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    ssl: {}
+    ssl: {
+        rejectUnauthorized: true,
+        ca: fs.readFileSync('./isrgrootx1.pem') // Ruta real a tu certificado CA
+    }
 });
 
 // Convertir a promesas
