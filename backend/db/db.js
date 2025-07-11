@@ -8,6 +8,7 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
     ssl: process.env.TIDB_ENABLE_SSL === 'true' ? {
+        rejectUnauthorized: false,
         minVersion: 'TLSv1.2',
         ca: process.env.TIDB_CA_PATH ? fs.readFileSync(process.env.TIDB_CA_PATH) : undefined // Ruta real a tu certificado CA
     } : null,
