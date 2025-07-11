@@ -7,10 +7,10 @@ const pool = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    ssl: {
-        rejectUnauthorized: true,
-        ca: fs.readFileSync('/etc/secrets/isrgrootx1.pem') // Ruta real a tu certificado CA
-    }
+    ssl: process.env.TIDB_ENABLE_SSL === 'true' ? {
+        minVersion: 'TLSv1.2',
+        ca: process.env.TIDB_CA_PATH ? fs.readFileSync(process.env.TIDB_CA_PATH) : undefined // Ruta real a tu certificado CA
+    } : null,
 });
 
 // Convertir a promesas
