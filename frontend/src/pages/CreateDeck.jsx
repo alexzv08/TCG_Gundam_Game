@@ -7,6 +7,7 @@ import {
     checkMaxColores 
 } from "../utils/deckRules.js";
 import Sidebar from '../organisms/sidebar/Sidebar.jsx';
+import SideBar2 from '../organisms/sidebar/Sidebar copy.jsx';
 import FiltroCartas from '../organisms/filtroCartas/FiltroCartas.jsx';
 import ListadoCartas from '../organisms/listadoCartas/ListadoCartas.jsx';
 import MazoActual from '../organisms/mazoActual/MazoActual.jsx';
@@ -30,6 +31,7 @@ const CreateDeck = () => {
     useEffect(() => {
         // Llamamos a la función de obtener cartas
         obtenerCartas().then((data) => {
+            console.log("Cartas obtenidas:", data);
             setCartas(data); // Guardamos las cartas en el estado
             setCartasFiltradas(data); // Inicialmente mostramos todas las cartas
         });
@@ -147,7 +149,8 @@ const CreateDeck = () => {
                     />
             <div>
                 <main className='flex p-0 m-0 border-red-50'>
-                    <Sidebar />
+                    {/* <Sidebar /> */}
+                    <SideBar2 />
                 <div className="w-screen h-screen p-5 pl-10 overflow-hidden">
                     <div className="flex flex-col mt-4">
                         <FiltroCartas cartas={cartas} onFilter={applyFilters} types={types} colors={colors} />

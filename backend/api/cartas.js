@@ -7,6 +7,7 @@ const { verificarToken } = require('./authMiddleware'); // Importas el middlewar
 router.get('/cartas', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM cartas'); // Realizas la consulta a la DB
+        console.log(rows);
         res.json(rows); // Devuelves las cartas en formato JSON
     } catch (error) {
         res.status(500).json({ error: 'Error al obtener las cartas' });

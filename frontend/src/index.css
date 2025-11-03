@@ -7,3 +7,16 @@
     padding: 0;
     margin: 0;
 }
+
+:root {
+    --bg-primary: #111318;
+    --bg-secondary: #1A1D23;
+    --bg-secondary-translucent: rgba(26, 29, 35, 0.8);
+    --accent-orange: #F97316;
+    --accent-orange-glow: rgba(249, 115, 22, 0.4);
+    --accent-orange-dark: #EA580C;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --border-color: #334155;
+    --border-color-light: #475569;
+}
