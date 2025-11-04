@@ -1,0 +1,6 @@
+Crear pantalla para selecionar el mazo, o editar el mazo
+pantalla para selecionar partida/crear/unirse
+crear sistema de efectos
+crear pantalla de usuario con distinta informacion de la cuenta /elo/ win-lose/ games/ mazos % win
+crear pantalla home con distintas noticias
+crear sistema para poder publicar noticias / informacion 
