@@ -10,6 +10,8 @@ const db = require('../db/db');
 const cartasRouter = require('../api/cartas');
 const insertCartasAdmin = require('../api/insertCartasBBDD');
 const authRoutes = require('../api/middlewareUser');
+const gamesRouter = require('../api/games');
+
 const { createGame, añadirJugador } = require("../logicaGame/game/gameLogic");
 const { createRoom, joinRoom } = require('../logicaGame/waitingRooms/waitingRooms');
 
@@ -57,6 +59,8 @@ app.use('/api', authRoutes);
 
 // Rutas para las cartas
 app.use('/api', cartasRouter); // Ruta para las cartas
+
+app.use('/api', gamesRouter); // Ruta para las cartas
 
 app.use('/api/admin', insertCartasAdmin); // Ruta para las cartas
 
