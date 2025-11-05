@@ -5,6 +5,7 @@ import { useState } from "react";
 
     const MazoActual = ({ mazo, onRemoveFromDeck, onAddToDeck, onRestToDeck, onOpenModalCarta }) => {
     // Validar que mazo sea un array
+    const [sortBy, setSortBy] = useState("cost");
     const mazoSeguro = Array.isArray(mazo) ? mazo : [];
     // const [mazoSeguro, setMazoSeguro] = useState(Array.isArray(mazo) ? mazo : []);
 
@@ -53,20 +54,68 @@ import { useState } from "react";
         }
     }
 
+    const sortedMazo = [...mazoSeguro].sort((a, b) => {
+        if (sortBy === 'cost') {
+            return a.carta.cost - b.carta.cost;
+        }
+        if (sortBy === 'level') {
+            return a.carta.level - b.carta.level;
+        }
+        if (sortBy === 'ap') {
+            return a.carta.ap - b.carta.ap;
+        }
+        if (sortBy === 'hp') {
+            return a.carta.hp - b.carta.hp;
+        }
+        return 0; // Orden por defecto (el que llega)
+    });
+
     return (
         <div className="mazo-actual">
-            <div className="flex items-center justify-between px-2 mb-2">
-                <h2 className="text-xl text-white">Total {mazoSeguro.reduce((total, item) => total + item.cantidad, 0)}</h2>
-                <button className="px-1 text-xl text-white border rounded-md">Stats</button>
-                <button className="px-1 text-xl text-white border rounded-md">Clear</button>
-                <button className="p-1 px-2 text-xl text-white bg-green-400 rounded-lg "
-                    onClick={() => {
-                        guardarMazo();
-                    }}
-                >Save</button>
+            <div >
+                <div className="flex items-center justify-between px-2 pb-2 mb-2 border-b-2 border-[var(--accent-orange)] text-2xl section-title truncate">
+                    <div className="flex items-center gap-2">
+                        <h2 className="text-xl text-[var(--text-primary)] font-bold uppercase tracking-widest inline-block">Nombre mazo </h2>
+                        <div className="text-gray-400 ">{mazoSeguro.reduce((total, item) => total + item.cantidad, 0)} / 50</div>
+                        <div className="w-5 h-5 bg-white"></div>
+                    </div>
+                    <button className="px-1 text-xl text-white border rounded-md">Clear</button>
+                    <button className="p-1 px-2 text-xl text-white bg-green-400 rounded-lg "
+                        onClick={() => {
+                            guardarMazo();
+                        }}
+                    >Save</button>
+                </div>
+                <div className="flex items-center gap-3 px-2 mb-2">
+                    <h3 className="text-gray-400">Sort by:</h3>
+                    <button 
+                        className={`px-2 py-1 rounded-xl transition-colors ${sortBy === 'cost' ? 'bg-[var(--accent-orange)] text-white' : 'text-gray-400 hover:bg-slate-700'}`}
+                        onClick={() => setSortBy(sortBy === 'cost' ? null : 'cost')}
+                    >
+                        Cost
+                    </button>
+                    <button 
+                        className={`px-2 py-1 rounded-xl transition-colors ${sortBy === 'level' ? 'bg-[var(--accent-orange)] text-white' : 'text-gray-400 hover:bg-slate-700'}`}
+                        onClick={() => setSortBy(sortBy === 'level' ? null : 'level')}
+                    >
+                        Level
+                    </button>
+                    <button 
+                        className={`px-2 py-1 rounded-xl transition-colors ${sortBy === 'ap' ? 'bg-[var(--accent-orange)] text-white' : 'text-gray-400 hover:bg-slate-700'}`}
+                        onClick={() => setSortBy(sortBy === 'ap' ? null : 'ap')}
+                    >
+                        AP
+                    </button>
+                    <button 
+                        className={`px-2 py-1 rounded-xl transition-colors ${sortBy === 'hp' ? 'bg-[var(--accent-orange)] text-white' : 'text-gray-400 hover:bg-slate-700'}`}
+                        onClick={() => setSortBy(sortBy === 'hp' ? null : 'hp')}
+                    >
+                        HP
+                    </button>
+                </div>
             </div>
-            {mazoSeguro.length > 0 ? (
-                mazoSeguro.map((item) => (
+            {sortedMazo.length > 0 ? (
+                sortedMazo.map((item) => (
                     <div
                         key={`${item.carta.id_coleccion}-${item.carta.id_carta}`}
                         className="flex justify-between p-0 m-0 text-white rounded-lg cursor-default"
