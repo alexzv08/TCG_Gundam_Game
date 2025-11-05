@@ -6,6 +6,7 @@ import Tablero from "./templates/Tablero"
 import Prueba from "./pages/Prueba";
 import Pruebas from "./pages/Pruebas";
 import AdminPanel from './pages/AdminPanel';
+import MachMaking from "./pages/MachMaking";
 // import { useEffect, useState } from 'react';
 // import { io } from 'socket.io-client';
 
@@ -26,7 +27,7 @@ const App = () => {
             <Route path="/tablero" element={<Tablero />} /> {/* Ruta para crear mazo */}
             <Route path="/pruebas" element={<Pruebas />} /> {/* Ruta para crear mazo */}
             <Route path="/admin" element={<AdminPanel />} />
-
+            <Route path="/machmaking" element={<MachMaking />} />
           </Routes>
         </main>
       </div>

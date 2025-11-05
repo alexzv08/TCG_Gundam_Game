@@ -25,8 +25,8 @@ const Sidebar = () => {
         },
         {
             icon: game,
-            title: "Game",
-            link: "/game"
+            title: "Machmaking",
+            link: "/machmaking"
         },
         {
             icon: userIcon,

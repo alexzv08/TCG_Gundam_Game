@@ -1,10 +1,6 @@
 import PropTypes from "prop-types";
 import Carta from "../carta/Card";
 
-// @TODO mejorar el diseño general del listado de las cartas
-// boton para poder ver las estadisticas general de las cartas
-// importat / exportar deck -> por
-
 
 const ListadoCartas = ({ cartas, onAddToDeck, onRestToDeck, onOpenModalCarta }) => {
 

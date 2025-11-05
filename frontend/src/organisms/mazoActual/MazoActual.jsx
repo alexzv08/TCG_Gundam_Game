@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
+
+
     const MazoActual = ({ mazo, onRemoveFromDeck, onAddToDeck, onRestToDeck, onOpenModalCarta }) => {
     // Validar que mazo sea un array
     const mazoSeguro = Array.isArray(mazo) ? mazo : [];

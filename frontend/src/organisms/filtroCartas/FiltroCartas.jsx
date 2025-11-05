@@ -10,7 +10,7 @@ const MAX_VALUE = 10;
 
 // --- Componente de Range Slider Auxiliar ---
 const RangeFilter = ({ label, name, range, max, tripe,onChange }) => (
-    <div className="w-[200px] p-2 border border-gray-300 rounded-lg bg-white shadow-sm">
+    <div className="w-[200px] p-2 border border-gray-300 rounded-lg bg-[var(--bg-primary)] shadow-sm">
         <label className="block mb-3 text-sm font-semibold text-gray-700">{label}: {range.join(' - ')}</label>
         {/* Usamos RCSlider.Range que es la importación correcta */}
         <Slider range
@@ -121,7 +121,7 @@ const FiltroCartas = ({ onFilter, types, colors}) => {
     // --- 4. RENDERIZADO ---
 
     return (
-        <div className="flex flex-col w-full p-4 bg-white rounded-lg shadow-xl filter-container">
+        <div className="flex flex-col w-full p-4 bg-[var(--bg-primary)] rounded-lg shadow-xl filter-container">
             {/* --- FILTROS BÁSICOS (Línea Principal) --- */}
             <div className="flex items-center w-full gap-4">
                 {/* INPUT DE NOMBRE */}
