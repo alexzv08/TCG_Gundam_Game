@@ -14,6 +14,7 @@ const gamesRouter = require('../api/games');
 
 const { createGame, añadirJugador } = require("../logicaGame/game/gameLogic");
 const { createRoom, joinRoom } = require('../logicaGame/waitingRooms/waitingRooms');
+const machmakingRouter = require('../api/gameMachmaking');
 
 const partidas = {};
 
@@ -64,6 +65,7 @@ app.use('/api', gamesRouter); // Ruta para las cartas
 
 app.use('/api/admin', insertCartasAdmin); // Ruta para las cartas
 
+app.use('/api/machmaking', machmakingRouter); // Ruta para machmaking
 
 function randomStartPlayer(players) {
     return players[Math.floor(Math.random() * players.length)];

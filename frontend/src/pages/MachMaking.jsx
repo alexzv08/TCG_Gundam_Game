@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
-import { obtenerPartidas } from "../utils/gamesApi.jsx";
+import { io } from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
+
+import { useState } from 'react';
 import Sidebar from "../organisms/sidebar/Sidebar copy";
 import GameRow from "../organisms/GameRow/GameRow";
 const mockActiveGames = [
@@ -10,16 +12,6 @@ const mockActiveGames = [
 ];
 
 const MachMaking = () => {
-    const [activeGames, setActiveGames] = useState(mockActiveGames);
-
-
-    useEffect(() => {
-        // Llamamos a la función de obtener cartas
-        obtenerPartidas().then((data) => {
-            console.log("Cartas obtenidas:", data);
-        });
-    }, []);
-
 return (
     <div className="flex p-0">
     {/* Componente del filtro */}
@@ -31,9 +23,15 @@ return (
                     <div className="flex flex-col items-center gap-3 my-5 border-2 border-[var(--accent-orange)] py-5 rounded-lg mx-auto">
                         <h1 className="text-xl text-white uppercase ">ready for deployment?</h1>
                         <h2 className="text-gray-400">Engage in combat and prove your strategic prowess!</h2>
-                        <button className="h-16 text-white bg-[var(--accent-orange)] w-40 text-xl uppercase text-bold">Find macth</button>
-                        <select name="" id="" className="w-60">
-                            <option value="">Deck XXXXX</option>
+                        <button className="h-16 text-white bg-[var(--accent-orange)] w-40 text-xl uppercase text-bold"
+                        onClick={handleQuickMatch}
+                        disabled={isLoading || !selectedDeckId}
+                        >
+                            Find macth
+                        </button>
+                        <select name="" id="" className="w-60"
+                        onChange={handleDeckChange}>
+                            <option value="1">Deck XXXXX</option>
                         </select>
                     </div>
                 </div>
