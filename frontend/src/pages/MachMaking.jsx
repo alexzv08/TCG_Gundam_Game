@@ -1,7 +1,5 @@
-import { io } from 'socket.io-client';
-import { useNavigate } from 'react-router-dom';
-
-import { useState } from 'react';
+import { useState, useEffect } from "react";
+import { obtenerPartidas } from "../utils/gamesApi.jsx";
 import Sidebar from "../organisms/sidebar/Sidebar copy";
 import GameRow from "../organisms/GameRow/GameRow";
 const mockActiveGames = [
@@ -12,6 +10,16 @@ const mockActiveGames = [
 ];
 
 const MachMaking = () => {
+    const [activeGames, setActiveGames] = useState(mockActiveGames);
+
+
+    useEffect(() => {
+        // Llamamos a la función de obtener cartas
+        obtenerPartidas().then((data) => {
+            console.log("Cartas obtenidas:", data);
+        });
+    }, []);
+
 return (
     <div className="flex p-0">
     {/* Componente del filtro */}
