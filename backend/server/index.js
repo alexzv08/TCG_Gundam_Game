@@ -61,7 +61,7 @@ app.use('/api', authRoutes);
 // Rutas para las cartas
 app.use('/api', cartasRouter); // Ruta para las cartas
 
-app.use('/api', gamesRouter); // Ruta para las cartas
+app.use('/api/infoGames', gamesRouter); // Ruta para las cartas
 
 app.use('/api/admin', insertCartasAdmin); // Ruta para las cartas
 

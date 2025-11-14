@@ -1,24 +1,45 @@
 import { useState, useEffect } from "react";
-import { obtenerPartidas } from "../utils/gamesApi.jsx";
+import { obtenerPartidas, obtenerMisDecks, handleQuickMatch } from "../utils/gamesApi.jsx";
 import Sidebar from "../organisms/sidebar/Sidebar copy";
 import GameRow from "../organisms/GameRow/GameRow";
-const mockActiveGames = [
-    { id: 1, host: 'Commander_Riker', players: 1, maxPlayers: 2, status: 'Waiting' },
-    { id: 2, host: 'Pilot_Ace', players: 2, maxPlayers: 2, status: 'In Progress' },
-    { id: 3, host: 'Spectre_7', players: 0, maxPlayers: 2, status: 'Waiting' },
-    { id: 4, host: 'Viper_44', players: 1, maxPlayers: 2, status: 'Waiting' },
-];
+import { useGame } from '../context/GameContext';
+
 
 const MachMaking = () => {
-    const [activeGames, setActiveGames] = useState(mockActiveGames);
 
+    const [activeGames, setActiveGames] = useState([]);
+    const [myDecks, setMyDecks] = useState([]);
+    const [selectedDeckId, setSelectedDeckId] = useState('');
 
     useEffect(() => {
         // Llamamos a la función de obtener cartas
         obtenerPartidas().then((data) => {
-            console.log("Cartas obtenidas:", data);
+            setActiveGames(data);
+            console.log(data);
+        });
+        // Llamamos a la función de obtener mis decks
+        obtenerMisDecks(localStorage.getItem("user")).then((data) => {
+            setMyDecks(data);
+            console.log(data);
         });
     }, []);
+
+    // MANEJAR EL CAMBIO DEL DECK
+    const handleDeckChange = (event) => {
+        setSelectedDeckId(event.target.value);
+    };
+
+    // FUNCION PARA BUSCAR PARTIDA
+    function handleQuickMatchButon() {
+        if (!selectedDeckId) {
+            alert("Please select a deck before finding a match.");
+            return;
+        }
+        console.log("Buscando partida rápida...");
+        // Realizo la peticion al back para buscar sala o crear una nueva        
+        handleQuickMatch(localStorage.getItem("user"),selectedDeckId);
+    }
+
 
 return (
     <div className="flex p-0">
@@ -32,14 +53,17 @@ return (
                         <h1 className="text-xl text-white uppercase ">ready for deployment?</h1>
                         <h2 className="text-gray-400">Engage in combat and prove your strategic prowess!</h2>
                         <button className="h-16 text-white bg-[var(--accent-orange)] w-40 text-xl uppercase text-bold"
-                        onClick={handleQuickMatch}
-                        disabled={isLoading || !selectedDeckId}
+                            onClick={handleQuickMatchButon}
                         >
                             Find macth
                         </button>
                         <select name="" id="" className="w-60"
+                        value={selectedDeckId}
                         onChange={handleDeckChange}>
-                            <option value="1">Deck XXXXX</option>
+                            <option key="none" value="" disabled>Select your deck</option>
+                            {myDecks.map((deck) => (
+                                <option key={deck.id_mazo} value={deck.id_mazo}>{deck.nombre_mazo}</option>
+                            ))}
                         </select>
                     </div>
                 </div>
@@ -51,8 +75,8 @@ return (
                 <h1 className="uppercase border-b-2 border-[var(--accent-orange)] pb-2 text-white font-bold text-3xl w-fit">actives lobbies</h1>
                 <div className="w-full mx-auto"> 
                     <div className="max-w-8xl grid grid-cols-4 items-center gap-20 py-2 text-sm font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-                        <div className="text-center">Host</div>
-                        <div className="text-center">Pilots</div>
+                        <div className="text-center">Room Name</div>
+                        <div className="text-center">Players</div>
                         <div className="text-center">Status</div>
                         <div className="text-center">Join</div>
                     </div>

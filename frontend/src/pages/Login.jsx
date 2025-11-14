@@ -4,7 +4,7 @@ const Login = () => {
 return (
     <div className="p-6">
     {/* Componente del filtro */}
-    <LoginForm />
+        <LoginForm />
     </div>
     );
 };
